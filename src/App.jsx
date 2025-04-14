@@ -4,6 +4,7 @@ import Nav from './components/Nav';
 import About from './pages/About/About';
 import Adduser from './components/Adduser';
 import Home from './pages/home/Home';
+import Edit from './components/Edit';
 
 
 function App() {
@@ -19,6 +20,10 @@ function App() {
     {
       path: "/Add",
       element: <><Nav/><Adduser/></>
+    },
+    {
+      path:"/Edit/:id",
+      element:<><Nav/><Edit/></>
     }
   ])
   return (
