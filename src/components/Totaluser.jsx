@@ -21,7 +21,7 @@ const Totaluser = () => {
 
     return (
         <div>
-            <p>Total Users: {userdata.totalData} </p>
+            <p className="font-medium text-sky-800">Total Users: <span className="text-blue-700">{userdata.totalData}</span></p>
         </div>
     )
 }

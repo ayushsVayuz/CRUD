@@ -126,7 +126,7 @@ function Adduser() {
         onSubmit={handleSubmit(onSubmit)}
         className="p-10  h-140 mt-10 shadow-2xl"
       >
-        <h1 className="pt-4 text-center text-blue-600 text-3xl h-17">
+        <h1 className="pt-4 text-center font-medium text-blue-600 text-3xl h-17">
           User Data
         </h1>
         <div className="grid grid-rows-3 ">
@@ -140,7 +140,7 @@ function Adduser() {
                 maxLength={25}
                 {...field}
                 type="text"
-                className="p-3 w-80 text-lg"
+                className="p-3 w-80 text-lg border-2 border-white border-b-blue-500"
                 name="name"
                 placeholder="Name"
                 onChange={(e) => handleNameChange({e,field})}
@@ -158,7 +158,7 @@ function Adduser() {
                 {...field}
                 maxLength={30}
                 type="text"
-                className="p-3 w-80 text-lg"
+                className="p-3 w-80 text-lg border-2 border-white border-b-blue-500"
                 name="email"
                 placeholder="Email"
 
@@ -180,7 +180,7 @@ function Adduser() {
                 minLength={10}
 
                 type="tel"
-                className="p-3 w-80 text-lg "
+                className="p-3 w-80 text-lg border-2 border-white border-b-blue-500"
                 name="phone"
                 placeholder="Phone Number"
                 onChange={(e) => {handlePhoneChange({e,field})}}
@@ -199,7 +199,7 @@ function Adduser() {
                 maxLength={20}
 
                 type="text"
-                className="p-3 w-80 text-lg "
+                className="p-3 w-80 text-lg border-2 border-white border-b-blue-500"
                 name="location"
                 placeholder="Location"
 
@@ -219,7 +219,7 @@ function Adduser() {
                 maxLength={60}
 
                 type="text"
-                className="p-3 w-80 text-lg "
+                className="p-3 w-80 text-lg border-2 border-white border-b-blue-500"
                 name="about"
                 placeholder="About"
 
@@ -247,7 +247,7 @@ function Adduser() {
             }
           /> */}
 
-        <input type="file" name="image"  className="p-3 w-80 text-lg text-gray-500"  onChange={(e)=> setImage(e.target.files[0])} />
+        <input type="file" name="image"  className="p-3 w-80 text-lg border-2 border-white  text-gray-500"  onChange={(e)=> setImage(e.target.files[0])} />
 
 
         </div>

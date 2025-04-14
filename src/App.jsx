@@ -3,15 +3,16 @@ import './App.css';
 import Nav from './components/Nav';
 import About from './pages/About/About';
 import Adduser from './components/Adduser';
-import Home from './pages/home/Home';
 import Edit from './components/Edit';
+import Home from  './pages/Home/Home.jsx'
+
 
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element:<><Nav /><Home /></>
+      element:<><Nav /><Home/></>
     },
     {
       path: "/About",
