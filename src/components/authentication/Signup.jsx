@@ -22,7 +22,7 @@ function Signup() {
 
         try {
             const response = await axios.post(
-                import.meta.env.VITE_AUTH +`/auth/signup`, 
+                import.meta.env.VITE_API + `/auth/signup`, 
                 formData, 
                 {
                     headers: { "Content-Type": " application/json" }
@@ -89,6 +89,7 @@ function Signup() {
                     
                         <input 
                         {...field} 
+                        minLength={10}
                         maxLength={10}
                         type="tel" 
                         className="p-3 border-2 border-white border-b-blue-500"
