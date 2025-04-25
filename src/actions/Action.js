@@ -2,7 +2,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
 // Get all users
-export const fetchUserData = createAsyncThunk("fetchUserData",
+export const fetchAllUsersData = createAsyncThunk("fetchAllUsersData",
     async (payload) => {        
         const response = await axios.get(import.meta.env.VITE_API + `/users`,{
             params:{
@@ -11,10 +11,62 @@ export const fetchUserData = createAsyncThunk("fetchUserData",
                 search: payload?.searchQuery
             },             
        });
-       console.log("User Data", response);
        return response.data
        
     }
+)
+
+// Post user data
+export const postUserData = createAsyncThunk("postUserData",
+    async(formData) => {
+        const response = await axios.post(
+        import.meta.env.VITE_API+`/users`,
+        formData, 
+        {
+            headers: {
+            "Content-Type": "multipart/form-data",
+            }
+        },
+        ).catch(function (error) {
+            console.log(error.response.data);
+        });
+        return response.data
+    }
+   
+)
+
+// Get specific user data
+export const getSpecificUserData = createAsyncThunk("getSpecificUserData", 
+    async (userId) => {
+        
+        const response = await axios.get(
+            import.meta.env.VITE_API + `/users/${userId}`
+        ).catch(function (error) {
+            console.log(error.response.data);
+        });
+        return response.data
+    }
+)
+
+// Updated user data
+export const updateUserData = createAsyncThunk("updateUserData",
+    
+    async (payload) => {
+        const response = await axios.put(
+            import.meta.env.VITE_API + `/users/${payload.id}`,
+            payload.formData, 
+            {
+              headers: {
+              "Content-Type": "multipart/form-data",
+              }
+            },
+          ).catch(function (error) {
+            console.log(error.response.data);
+          });
+          
+          return response.data
+    }
+   
 )
 
 // Delete a user

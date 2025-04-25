@@ -9,6 +9,7 @@ import AboutPage from './pages/about/AboutPage.jsx';
 import Login from './components/authentication/Login.jsx';
 import ProtectedRoute from './components/authentication/ProtectedRoute.jsx';
 import Signup from './components/authentication/Signup.jsx';
+import { ToastContainer } from 'react-toastify';
 
 
 function App() {
@@ -78,6 +79,7 @@ function App() {
       {
         isOnline == true ? <RouterProvider router={router} /> : <h1 className='text-center mt-60 mb-60 h-screen text-[40px]'>You are not connected to internet.</h1>
       }
+            <ToastContainer />
     </div>
   )
 }

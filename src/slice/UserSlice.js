@@ -1,5 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { fetchUserData, deleteUser } from "../actions/Action";
+import { fetchAllUsersData, deleteUser, postUserData, getSpecificUserData, updateUserData } from "../actions/Action";
+import { toast } from 'react-toastify';
+
+
 
 // It defines the user slice, which contains actions and reducers for managing user's state
 export const userSlice = createSlice({
@@ -7,35 +10,78 @@ export const userSlice = createSlice({
     initialState :{ 
         loading:false,
         payload:null,
-        userData:[]
+        usersData:[], 
+        totalData:0
     } ,
-    reducers: {
-        fetchData : (state,action) => {
-            state.payload = action.payload
-        }
-            
-    },
+    reducers: {},
     extraReducers:(builder) => {
         builder
-        .addCase(fetchUserData.pending, (state, action) =>{
-            
+        .addCase(fetchAllUsersData.pending, (state, action) =>{
             state.loading = true         
         })
-        .addCase(fetchUserData.fulfilled, (state, action) =>{
-            console.log("check action", action);
-            state.userData = action.payload.data,
+        .addCase(fetchAllUsersData.fulfilled, (state, action) =>{
+            state.usersData = action.payload.data,
+            state.totalData = action.payload.totalData
             state.loading = false
         })
-        .addCase(fetchUserData.rejected, (state, action) =>{
-            state.loading = true
+        .addCase(fetchAllUsersData.rejected, (state, action) =>{
+            state.loading = false
+        })
+        .addCase(deleteUser.pending, (state, action) => {
+            toast.pending("removing the user");
         })
         .addCase(deleteUser.fulfilled, (state, action) => {
-            state.userData = state.userData.filter((user) => user._id !== action.payload);
-        });
+            state.usersData = state.usersData.filter((user) => user._id !== action.payload);
+            state.totalData -= 1
+            toast.success("User removed")
+        })
+        .addCase(deleteUser.rejected, (state, action) => {
+            toast.rejected("User can't be removed");
+        
+        })
+        .addCase(postUserData.pending, (state, action) => {
+            state.loading = true     
+        })
+        .addCase(postUserData.fulfilled, (state, action) => {
+            state.usersData = [...state.usersData, action.payload.data]
+            state.loading = false
+            state.totalData += 1
+        })
+        .addCase(postUserData.rejected, (state, action) => {
+            state.loading = false
+        })
+        .addCase(getSpecificUserData.pending, (state, action) => {
+            state.loading = true  
+        })
+        .addCase(getSpecificUserData.fulfilled, (state, action) => {
+            state.usersData = action.payload.data
+            state.loading = false
+        })
+        .addCase(getSpecificUserData.rejected, (state, action) => {
+            state.loading = false  
+        })
+        .addCase(updateUserData.pending, (state, action) => {
+            state.loading = true
+        })
+        .addCase(updateUserData.fulfilled, (state, action) => {
+            state.usersData = //?
+            //i have an Array []
+            //i have an object {}
+            //find this object index from this array
+            //replce the index object with new object
+            state.loading = false
+        })
+        .addCase(updateUserData.rejected, (state, action) => {
+            state.loading = true
+        })
+
+
+        
+       
     }
 
 })
 
 
-export const {fetchData} = userSlice.actions
+
 export default userSlice.reducer;

@@ -5,14 +5,17 @@ import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
-import UpdateUserShimmer from "../shimmer/UpdateUserShimmer";
+import { getSpecificUserData , updateUserData } from "../../actions/Action";
+import { useDispatch, useSelector } from "react-redux";
 
 const UpdateUser = () => {
 
   let navigate = useNavigate();
 
     const {id} = useParams();
-    const [shimmering, setShimmering] = useState(true);
+    const {usersData, loading  } = useSelector((state) => state.user);  
+    const dispatch = useDispatch();
+    
     
     const {
       handleSubmit,
@@ -23,36 +26,24 @@ const UpdateUser = () => {
     } = useForm();
   
     const [image, setImage] = useState(null)
-    const [userData, setUserData] = useState()
+    
   
-    // params: id(to uniquely identify user ) and returns data of that particular user using get request whose id is in the parameter
-    const getUserData = async () => {
 
-      try {
-          const response = await axios.get(import.meta.env.VITE_API + `/users/${id}`);
-          setUserData(response.data.data)
-          setShimmering(false)
-      } catch(error ) {
-          console.log(error)
-          setShimmering(false)
-      }
-    }
-
-  // It triggers getUserData function
+  // Fetch specific user data
   useEffect( () => {
-      getUserData()
-  }, [])
+    dispatch(getSpecificUserData(id));
+  }, [dispatch, id])
 
   // params: userData(data of user with particular id), Update form inputs with existing user data.
  
   useEffect( () => {
     
-    setValue("name",userData?.name)
-    setValue("email",userData?.email)
-    setValue("phone",userData?.phone)
-    setValue("location",userData?.location)
-    setValue("about",userData?.about)
-  }, [userData])
+    setValue("name",usersData?.name)
+    setValue("email",usersData?.email)
+    setValue("phone",usersData?.phone)
+    setValue("location",usersData?.location)
+    setValue("about",usersData?.about)
+  }, [usersData])
 
     console.log("errors", errors);
   
@@ -68,27 +59,19 @@ const UpdateUser = () => {
       formData.append("image", image);
 
 
-      const response = await axios.put(
-        import.meta.env.VITE_API + `/users/${id}`,
-        formData, 
-        {
-          headers: {
-          "Content-Type": "multipart/form-data",
-          }
-        },
-      ).catch(function (error) {
-        console.log(error.response.data);
-      });
+      dispatch(updateUserData({formData, id}));
       navigate(-1);
-      console.log("response from edit ", response)
+      
     };
 
 
   return (
-    shimmering ?
-    <UpdateUserShimmer/>
-    :
-     <div className="flex justify-center h-screen">
+    loading ?
+    <div className="flex justify-center h-100 items-center">
+      <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
+    </div>
+  : 
+    <div className="flex justify-center h-screen">
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="pl-10 pr-10 pt-5 pb-5 h-145 mt-6 shadow-2xl"

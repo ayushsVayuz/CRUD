@@ -1,14 +1,18 @@
 import { useState } from "react";
 import React from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
+import { postUserData } from "../../actions/Action";
+import { useDispatch, useSelector } from "react-redux";
  
 
 function CreateUser() {
 
   let navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { loading } = useSelector((state) => state.user);
 
   const {
     handleSubmit,
@@ -21,7 +25,7 @@ function CreateUser() {
 
   console.log("errors", errors);
 
-  // params: data (provided by user to create new user record) , Updates Api with new user's data using post request
+  // params: data (provided by user to create new user recor, Updates Api with new user's data using post request
   const onSubmit = async (data) => {
 
     let formData = new FormData();
@@ -32,18 +36,7 @@ function CreateUser() {
     formData.append("about", data?.about);
     formData.append("image", image);
 
-    
-    const response = await axios.post(
-      import.meta.env.VITE_API+`/users`,
-      formData, 
-      {
-        headers: {
-        "Content-Type": "multipart/form-data",
-        }
-      },
-    ).catch(function (error) {
-      console.log(error.response.data);
-    });
+    dispatch(postUserData(formData))
     navigate(-1);
 
   };
@@ -51,6 +44,11 @@ function CreateUser() {
 
 
   return (
+    loading ? (
+    <div className="flex justify-center h-100 items-center">
+      <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
+    </div>
+    ) : 
     <div className="flex justify-center h-screen">
       <form
         onSubmit={handleSubmit(onSubmit)}

@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { useSearchParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Pagination = (props) => {
     
     const [itemOffset , setItemOffset] = useState(0);
     const [searchParams, setSearchParams] = useSearchParams();
 
+    const {totalData } = useSelector((state) => state.user);
+
+
     let itemPerPage = 6;
-    let totalData = props.totalData;
+    
     
     const pageCount = Math.ceil(totalData/itemPerPage);
 

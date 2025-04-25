@@ -2,22 +2,25 @@ import React, { useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Pagination from "../Pagination";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserData, deleteUser } from "../../actions/Action";
+import { deleteUser, fetchAllUsersData } from "../../actions/Action";
+import { toast } from "react-toastify";
 
 function UsersList() {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
 
-  const { userData, loading } = useSelector((state) => state.user);
-
+  const {usersData, loading, totalData } = useSelector((state) => state.user);
+  console.log("userData", usersData)
   let searchQuery = searchParams.get("search") || "";
-  let pageNumber = parseInt(searchParams.get("page")) || 1;
+  let pageNumber = searchParams.get("page") ;
   const pageLimit = 6;
 
   // Fetch data from the API through Redux
   useEffect(() => {
-    dispatch(fetchUserData({ pageNumber, searchQuery, pageLimit }));
-  }, [pageNumber, searchQuery]);
+    if(usersData.length==0) {
+      dispatch(fetchAllUsersData({ pageNumber, searchQuery, pageLimit }));
+    }
+    }, [dispatch, pageNumber, searchQuery]);
 
   // Handle delete functionality, when user wants to delete data
   const handleDelete = async (id) => {
@@ -25,13 +28,15 @@ function UsersList() {
     
   };
 
+
   const currentPage = pageNumber;
 
-  return loading ? (
+  return  (
+    loading ?
     <div className="flex justify-center h-100 items-center">
       <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
     </div>
-  ) : (
+  : 
     <div className="h-100 ml-60 mr-60">
       <table className="ml-5 h-auto border border-Sky-800">
         <thead>
@@ -44,10 +49,10 @@ function UsersList() {
           </tr>
         </thead>
         <tbody>
-          {userData.map((data, index) => (
+          {usersData?.map((data, index) => (
             <tr key={data._id} className="border-2 h-15 border-blue-400">
               <td className="h-10 border-2 text-center border-blue-400">
-                {(index + 1) + (currentPage - 1) * pageLimit}
+                {pageNumber ? (index + 1) + (currentPage - 1) * pageLimit : index+1}
               </td>
               <td className="pl-2 h-15 flex flex-row items-center gap-2">
                 {data?.image?.trim() &&
@@ -70,19 +75,22 @@ function UsersList() {
                 >
                   Update
                 </Link>
-                <button
+                
+               <button
                   type="button"
                   className="p-1 bg-red-700 w-18 rounded-3xl text-white"
                   onClick={() => handleDelete(data?._id)}
                 >
                   Delete
                 </button>
+               
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <Pagination totalData={userData.length} />
+      
+      <Pagination />
     </div>
   );
 }
