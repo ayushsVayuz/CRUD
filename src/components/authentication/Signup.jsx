@@ -2,7 +2,7 @@ import React , { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
-import { handleNameChange, handleEmailChange, handlePhoneChange, handlePasswordChange } from "../../utils/util";
+import { handleNameChange, handleEmailChange, handlePhoneChange, handlePasswordChange } from "../../utils/Utils";
 
 function Signup() {
     const navigate = useNavigate();

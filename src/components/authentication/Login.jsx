@@ -2,7 +2,7 @@ import React from "react";
 import axios from "axios";
 import { useNavigate, Link} from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
-import { handleEmailChange, handlePasswordChange } from "../../utils/util";
+import { handleEmailChange, handlePasswordChange } from "../../utils/Utils";
 
 
 function Login({setUser}) {

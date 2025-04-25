@@ -4,7 +4,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/util";
+import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
 import UpdateUserShimmer from "../shimmer/UpdateUserShimmer";
 
 const UpdateUser = () => {
@@ -95,7 +95,7 @@ const UpdateUser = () => {
         >
           <div className="flex flex-col gap-2">
           <h1 className="pt-4 text-center font-medium text-blue-600 text-3xl h-17">
-            Update user Data
+            Update User Details
           </h1>
             <Controller
               name="name"

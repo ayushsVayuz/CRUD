@@ -28,7 +28,7 @@ export const handleEmailChange = ({e,field}) => {
 // params: event(user action), field(existing data of user), return user phone number
 export const handlePhoneChange = ({e,field}) => {
 
-  e.target.value = e.target.value.trim();
+  if (isNaN(e.target.value.trim())) e.target.value = ""
 
     if (/^[0-9]*$/.test(e.target.value)) {
       e.target.value = e.target.value.trimStart();

@@ -3,7 +3,7 @@ import React from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
-import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/util";
+import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
  
 
 function CreateUser() {
