@@ -2,11 +2,6 @@ import React, { useEffect } from "react";
 
 function AboutPage() {
 
-   // Set title for about page
-    useEffect(() => {
-        document.title = "About | CRUD";
-    }, []);
-
     return (
         <div className="mt-12 px-4 sm:px-10 lg:px-20 flex flex-col text-center gap-10">
     

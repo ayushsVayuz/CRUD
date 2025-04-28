@@ -21,10 +21,6 @@ function Signup() {
         formState: { errors },
     } = useForm({ mode: "onChange" });
 
-    // Sets title for registering user
-    useEffect(() => {
-        document.title = "Signup | CRUD";
-    }, []);
 
     // Handle user signup and automatic login when successfully registered
     const handleSignup = async (data) => {
@@ -91,6 +87,7 @@ function Signup() {
                                     type="text"
                                     autoFocus
                                     inputMode="text"
+                                    maxLength={35}
                                     className={`p-3 w-full text-base border ${
                                         errors.fullName ? "border-red-500" : "border-blue-500"
                                     } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -129,6 +126,7 @@ function Signup() {
                                         {...field}
                                         type="text"
                                         autoFocus
+                                        maxLength={40}
                                         inputMode="email"
                                         className={`p-3 w-full text-base border ${
                                             errors.email ? "border-red-500" : "border-blue-500"
@@ -209,6 +207,7 @@ function Signup() {
                                          {...field}
                                          type={showPassword ? "text" : "password"}
                                          autoFocus
+                                         maxLength={50}
                                          inputMode="text"
                                          className={`p-3 w-full text-base border ${
                                              errors.password ? "border-red-500" : "border-blue-500"

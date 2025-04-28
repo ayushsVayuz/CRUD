@@ -10,11 +10,6 @@ import { FaArrowLeft } from "react-icons/fa";
 
 const UpdateUser = () => {
 
-    // Sets 
-    useEffect(() => {
-            document.title = "Update User | CRUD";
-        }, []);
-
   let navigate = useNavigate();
 
     const {id} = useParams();
@@ -65,9 +60,14 @@ const UpdateUser = () => {
       formData.append("about", data?.about);
       formData.append("image", image);
 
-
-       dispatch(updateUserData({formData, id}));
-      navigate(-1);
+        try {
+            const result =  dispatch(updateUserData({formData, id}));
+            if (result?.success) {
+                navigate(-1);
+            }
+        } catch (error) {
+            toast.error("Error: " + (error?.message || "Something went wrong"));
+        }
       
     };
 
@@ -117,6 +117,7 @@ const UpdateUser = () => {
                              {...field}
                              type="text"
                              autoFocus
+                             maxLength={35}
                              inputMode="text"
                              className={`p-3 w-full text-base border ${
                                  errors.name ? "border-red-500" : "border-blue-500"
@@ -156,6 +157,7 @@ const UpdateUser = () => {
                              {...field}
                              type="text"
                              autoFocus
+                             maxLength={40}
                              inputMode="email"
                              className={`p-3 w-full text-base border ${
                                  errors.email ? "border-red-500" : "border-blue-500"
@@ -237,7 +239,7 @@ const UpdateUser = () => {
                              type="text"
                              autoFocus
                              inputMode="text"
-                             maxLength={20}
+                             maxLength={45}
                              className={`p-3 w-full text-base border ${
                                  errors.location ? "border-red-500" : "border-blue-500"
                              } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -277,7 +279,7 @@ const UpdateUser = () => {
                              type="text"
                              autoFocus
                              inputMode="text"
-                             maxLength={80}
+                             maxLength={100}
                              className={`p-3 w-full text-base border ${
                                  errors.about ? "border-red-500" : "border-blue-500"
                              } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -296,8 +298,8 @@ const UpdateUser = () => {
                      </div>
                  )}
              />
- 
-           <input type="file" name="image"  className="p-3 w-80 text-lg border-2 border-white  text-gray-500"  onChange={(e)=> setImage(e.target.files[0])} />
+  
+           <input type="file" name="image"  accept="image/*"   className="p-3 w-80 text-lg border-2 border-white  text-gray-500"  onChange={(e)=> setImage(e.target.files[0])} />
          </div>
          
          

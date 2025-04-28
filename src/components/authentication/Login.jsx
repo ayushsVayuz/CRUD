@@ -19,11 +19,6 @@ function Login() {
     const dispatch = useDispatch();
     const { loading, token } = useSelector((state) => state.user);
 
-    // Sets title for authenticating user
-    useEffect(() => {
-        document.title = "Login | CRUD";
-    }, []);
-
     // Handles user login and dispatch authentication action using redux
     const handleLogin = async (data) => {
         let formData = { 
@@ -75,6 +70,7 @@ function Login() {
                                         {...field}
                                         type="text"
                                         autoFocus
+                                        max={40}
                                         inputMode="email"
                                         className={`p-3 w-full text-base border ${
                                             errors.email ? "border-red-500" : "border-blue-500"
@@ -115,6 +111,7 @@ function Login() {
                                         type={showPassword ? "text" : "password"}
                                         autoFocus
                                         inputMode="text"
+                                        maxLength={50}
                                         className={`p-3 w-full text-base border ${
                                             errors.password ? "border-red-500" : "border-blue-500"
                                         } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}

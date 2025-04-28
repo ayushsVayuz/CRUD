@@ -35,7 +35,6 @@ function UsersList() {
   const handleConfirmDelete = () => {
     dispatch(deleteUser(selectedUserId));
     setModalOpen(false);
-    dispatch(fetchAllUsersData({ pageNumber, searchQuery, pageLimit }));
 
   };
 

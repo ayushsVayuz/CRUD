@@ -70,7 +70,7 @@ export const userSlice = createSlice({
         .addCase(deleteUser.fulfilled, (state, action) => {
             state.usersData = state.usersData.filter((user) => user._id !== action.payload);
             state.totalData -= 1
-            toast.success("User removed successfully!"); 
+            toast.success("User removed "); 
         })
         
         .addCase(deleteUser.rejected, (state, action) => {
@@ -85,7 +85,7 @@ export const userSlice = createSlice({
                 state.totalData += 1;
             }
             state.loading = false;
-            toast.success("User successfully created.")
+            toast.success("User created.")
         })
         .addCase(postUserData.rejected, (state, action) => {
             state.loading = false;
@@ -111,7 +111,7 @@ export const userSlice = createSlice({
                 user._id === updatedUser._id ? updatedUser : user
             );
             state.loading = false;
-            toast.success("User updated successfully!");
+            toast.success("User updated");
         })
         .addCase(updateUserData.rejected, (state, action) => {
             state.loading = false;
