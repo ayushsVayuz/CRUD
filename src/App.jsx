@@ -10,7 +10,7 @@ import Login from './components/authentication/Login.jsx';
 import ProtectedRoute from './components/authentication/ProtectedRoute.jsx';
 import Signup from './components/authentication/Signup.jsx';
 import { ToastContainer } from 'react-toastify';
-import { HelmetProvider } from "react-helmet-async";
+
 
 
 function App() {
@@ -49,25 +49,18 @@ function App() {
   ])
 
   return (
-    <HelmetProvider>
+   
     <div>
       {
         isOnline == true ? <RouterProvider router={router} /> : <h1 className='text-center mt-60 mb-60 h-screen text-[40px]'>You are not connected to internet.</h1>
       }
             <ToastContainer 
               position="bottom-right"  
-              autoClose={2000} 
-              hideProgressBar={false} 
-              newestOnTop={true} 
-              closeOnClick 
-              rtl={false} 
-              pauseOnFocusLoss 
-              draggable 
-              pauseOnHover 
+              autoClose={2000}  
             />
 
     </div>
-    </HelmetProvider>
+
   )
 }
 

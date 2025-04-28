@@ -7,9 +7,13 @@ import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationC
 import { getSpecificUserData , updateUserData } from "../../actions/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { FaArrowLeft } from "react-icons/fa";
-import { Helmet } from 'react-helmet-async';
 
 const UpdateUser = () => {
+
+    // Sets 
+    useEffect(() => {
+            document.title = "Update User | CRUD";
+        }, []);
 
   let navigate = useNavigate();
 
@@ -74,10 +78,7 @@ const UpdateUser = () => {
        <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
      </div>
      ) : 
-     <>
-        <Helmet>
-            <title>Update User | CRUD</title>
-        </Helmet>
+     
      <div className="min-h-screen flex items-center justify-center">
        <form
          onSubmit={handleSubmit(onSubmit)}
@@ -313,7 +314,7 @@ const UpdateUser = () => {
        
        </form>
      </div>
-     </>
+     
    );
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
@@ -6,9 +6,10 @@ import { handleNameChange, handleEmailChange, handlePhoneChange, handlePasswordC
 import { registerUser, authenticateUser } from "../../actions/Action";
 import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Helmet } from "react-helmet-async";
 
 function Signup() {
+
+
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const { loading } = useSelector((state) => state.user);
@@ -19,6 +20,11 @@ function Signup() {
         handleSubmit,
         formState: { errors },
     } = useForm({ mode: "onChange" });
+
+    // Sets title for registering user
+    useEffect(() => {
+        document.title = "Signup | CRUD";
+    }, []);
 
     // Handle user signup and automatic login when successfully registered
     const handleSignup = async (data) => {
@@ -58,10 +64,7 @@ function Signup() {
                 <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
             </div>
         ) : (
-            <>
-            <Helmet>
-                <title>SignUp | CRUD</title>
-            </Helmet>
+            
             <div className="min-h-screen flex items-center justify-center">
                 <form onSubmit={handleSubmit(handleSignup)} className="pl-6 pr-6 pt-1 pb-5 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto">
                     <h1 className="text-center text-blue-600 text-3xl font-medium">Create Account</h1>
@@ -256,7 +259,7 @@ function Signup() {
                     </div>
                 </form>
             </div>
-            </>
+        
         )
        
     );

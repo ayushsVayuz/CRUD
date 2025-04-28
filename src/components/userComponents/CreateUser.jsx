@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
@@ -6,7 +6,6 @@ import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationC
 import { postUserData } from "../../actions/Action";
 import { useDispatch, useSelector } from "react-redux";
 import { FaArrowLeft } from "react-icons/fa";
-import { Helmet } from 'react-helmet-async';
 
 function CreateUser() {
 
@@ -20,7 +19,7 @@ function CreateUser() {
     control,
     formState: { errors },
     reset
-  } =useForm({ mode: "onChange" });
+  } = useForm({ mode: "onChange" });
 
   const [image, setImage] = useState(null)
 
@@ -31,8 +30,14 @@ function CreateUser() {
     location: "",
     about: "",
   };
+
   
   console.log("errors", errors);
+
+  // Sets title for Create User Component
+  useEffect(() => {
+    document.title = "Create User | CRUD";
+    }, []);
 
 // Handles form submission to create a new user in the API.
 const onSubmit = async (data) => {
@@ -58,10 +63,8 @@ const onSubmit = async (data) => {
       <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
     </div>
     ) : 
-    <>
-        <Helmet>
-            <title>Create User | CRUD</title>
-        </Helmet>
+    
+        
     <div className="min-h-screen flex items-center justify-center">
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -296,7 +299,7 @@ const onSubmit = async (data) => {
       
       </form>
     </div>
-    </>
+    
   );
 }
 

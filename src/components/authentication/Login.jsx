@@ -5,7 +5,6 @@ import { handleEmailChange, handlePasswordChange } from "../../utils/Utils";
 import { useDispatch, useSelector } from "react-redux";
 import { authenticateUser } from "../../actions/Action";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { Helmet } from 'react-helmet-async';
 
 
 function Login() {
@@ -19,6 +18,11 @@ function Login() {
 
     const dispatch = useDispatch();
     const { loading, token } = useSelector((state) => state.user);
+
+    // Sets title for authenticating user
+    useEffect(() => {
+        document.title = "Login | CRUD";
+    }, []);
 
     // Handles user login and dispatch authentication action using redux
     const handleLogin = async (data) => {
@@ -45,10 +49,7 @@ function Login() {
                 <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
             </div>
         ) : (
-            <>
-            <Helmet>
-                <title>Login | CRUD</title>
-            </Helmet>
+           
             <div className="min-h-screen flex items-center justify-center">
                 <form onSubmit={handleSubmit(handleLogin)} className="p-6 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto">
                     <h1 className="text-center text-blue-600 text-3xl font-medium">Welcome Back</h1>
@@ -164,7 +165,6 @@ function Login() {
                     </div>
                 </form>
             </div>
-            </>
         )
        
         );

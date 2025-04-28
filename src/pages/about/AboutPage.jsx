@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 
 function AboutPage() {
 
-   // Set the about page title dynamically when the About page is loaded 
+   // Set title for about page
     useEffect(() => {
         document.title = "About | CRUD";
     }, []);

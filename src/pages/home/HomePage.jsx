@@ -1,18 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import TotalUsers from "../../components/userComponents/TotalUsers";
 import UsersList from "../../components/userComponents/UsersList";
 import SearchUsers from "../../components/userComponents/SearchUsers";
-import { Helmet } from "react-helmet-async";
+
 
 const HomePage = () => {
-  return (
-    <>
-      <Helmet>
-        <title>Home | CRUD</title>
-      </Helmet>
 
-   
+  //Sets title for home page
+  useEffect(() => {
+          document.title = "Home | CRUD";
+      }, []);
+  return (
       <div className="pt-10 px-4 sm:px-8 lg:px-16 xl:px-24 flex justify-center">
         <div className="max-w-6xl w-full">
        
@@ -42,7 +41,7 @@ const HomePage = () => {
           </div>
         </div>
       </div>
-    </>
+
   );
 };
 
