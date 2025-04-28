@@ -1,95 +1,174 @@
-import React from "react";
-import axios from "axios";
-import { useNavigate, Link} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { handleEmailChange, handlePasswordChange } from "../../utils/Utils";
+import { useDispatch, useSelector } from "react-redux";
+import { authenticateUser } from "../../actions/Action";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import { Helmet } from 'react-helmet-async';
 
 
-function Login({setUser}) {
+function Login() {
     const navigate = useNavigate();
-    const {control, handleSubmit} = useForm();
+    const [showPassword, setShowPassword] = useState(false);
+    const {
+        control,
+        handleSubmit,
+        formState: { errors },
+    } = useForm({ mode: "onChange" }); 
 
-    // params: data (provided by user to Login ), Checks Api for user's email and password through post request and if found, redirects user to HomePage 
+    const dispatch = useDispatch();
+    const { loading, token } = useSelector((state) => state.user);
+
+    // Handles user login and dispatch authentication action using redux
     const handleLogin = async (data) => {
-        let formData = {
-            email : data?.email,
-            password : data?.password
-        }
-
-        try {
-            const response = await axios.post(
-                import.meta.env.VITE_API + `/auth/login`, 
-                formData,
-                {
-                    headers: {
-                        "Content-Type":"application/json   ",
-                    }
-                });
-                console.log("res", response)
-            if (response.data.success) {
-                const expiresAt = Date.now() + 120 * 60 * 1000;
-                localStorage.setItem("token", response.data.data.token);
-                localStorage.setItem("expiresAt", expiresAt); 
-                setUser(true);
-                navigate("/home");
-            }
-        } catch (error) {
-            alert("Login failed! Please check your credentials.");
-        }
+        let formData = { 
+            email: data?.email,
+            password: data?.password };
+        
+            dispatch(authenticateUser(formData));
     };
 
+    // Redirects user to homepage after successful login 
+    useEffect(() => {
+        if (token) {
+            navigate("/home");
+        }
+    }, [token, navigate]);
 
     return (
-        <div className="flex justify-center items-center h-screen">
-            <form onSubmit={handleSubmit(handleLogin)} className="p-10 h-110 shadow-2xl ">
-                <h1 className="pt-4 text-center font-medium text-blue-600 text-3xl h-17">Welcome Back</h1>
+       
+            
 
-                <div className="flex flex-col text-lg w-80">
-                <Controller 
-                    name="email" 
-                    control={control} 
-                    rules={{ required: true }}
-                    render={({ field }) => 
-                    
-                        <input 
-                        {...field} 
-                        maxLength={30}
-                        type="text" 
-                        className="p-3  border-2 border-white border-b-blue-500"
-                        placeholder="Email"
-                        onChange={(e) => {handleEmailChange({e,field})}}
+        loading ? (
+            <div className="flex justify-center h-screen items-center">
+                <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
+            </div>
+        ) : (
+            <>
+            <Helmet>
+                <title>Login | CRUD</title>
+            </Helmet>
+            <div className="min-h-screen flex items-center justify-center">
+                <form onSubmit={handleSubmit(handleLogin)} className="p-6 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto">
+                    <h1 className="text-center text-blue-600 text-3xl font-medium">Welcome Back</h1>
+
+                    <div className="flex flex-col space-y-4 mt-6">
+                      
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Email <span className="text-red-500">*</span>
+                        </label>
+                        <Controller
+                            name="email"
+                            control={control}
+                            rules={{
+                                required: "Email is required",
+                                pattern: {
+                                    value: /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                    message: "Invalid email format. Must start with at least 2 characters",
+                                },
+                            }}
+                            render={({ field }) => (
+                                <div className="relative">
+                                    <input
+                                        {...field}
+                                        type="text"
+                                        autoFocus
+                                        inputMode="email"
+                                        className={`p-3 w-full text-base border ${
+                                            errors.email ? "border-red-500" : "border-blue-500"
+                                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                        placeholder="Enter your email"
+                                        onChange={(e) => handleEmailChange({ e, field })}
+                                    />
+                                    {errors.email && (
+                                        <span className="absolute right-3 top-3 text-red-500 text-lg group">
+                                            ⚠️
+                                            <span className="absolute bottom-0 left-0 bg-red-500 text-white text-xs rounded p-1 opacity-0 group-hover:opacity-100 transition">
+                                                {errors.email?.message}
+                                            </span>
+                                        </span>
+                                    )}
+                                </div>
+                            )}
                         />
-                    } />
 
-                <Controller 
-                    name="password" 
-                    control={control} 
-                    rules={{ required: true }}
-                    render={({ field }) => 
-                        
-                        <input 
-                        {...field} 
-                        minLength={8}
-                        maxLength={10}
-                        type="password" 
-                        className="p-3  border-2 border-white border-b-blue-500"
-                        placeholder="Password"
-                        onChange={(e) => {handlePasswordChange({e,field})}}
-    
+                      
+                        <label className="text-sm font-medium text-gray-700 mb-1">
+                            Password <span className="text-red-500">*</span>
+                        </label>
+                        <Controller
+                            name="password"
+                            control={control}
+                            rules={{
+                                required: "Password is required",
+                                minLength: {
+                                    value: 8,
+                                    message: "Password must be at least 8 characters",
+                                },
+                            }}
+                            render={({ field }) => (
+                                <div className="relative">
+                                    <input
+                                        {...field}
+                                        type={showPassword ? "text" : "password"}
+                                        autoFocus
+                                        inputMode="text"
+                                        className={`p-3 w-full text-base border ${
+                                            errors.password ? "border-red-500" : "border-blue-500"
+                                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                        placeholder="Enter your password"
+                                        onChange={(e) => handlePasswordChange({ e, field })}
+                                    />
+
+                                 
+                                    <span
+                                        className="absolute right-10 top-4 cursor-pointer text-gray-600"
+                                        onClick={() => setShowPassword((prev) => !prev)}
+                                    >
+                                        {showPassword ? <FaEyeSlash /> : <FaEye />}
+                                    </span>
+
+                                    {errors.password && (
+                                        <span className="absolute right-3 top-3 text-red-500 text-lg group">
+                                            ⚠️
+                                            <span className="absolute bottom-0 left-0 bg-red-500 text-white text-xs rounded p-1 opacity-0 group-hover:opacity-100 transition">
+                                                {errors.password?.message}
+                                            </span>
+                                        </span>
+                                    )}
+                                </div>
+                            )}
                         />
-                    } />
 
-               
+                       
+                        <button
+                            disabled={Object.keys(errors).length > 0}
+                            className={`mt-6 p-3 w-full font-medium text-lg rounded-xl transition duration-200 ease-in-out ${
+                                Object.keys(errors).length > 0 ?  "bg-gray-400 cursor-not-allowed text-white" : "bg-blue-500 hover:bg-blue-600 text-white"
+                            }`}
+                        >
+                            Log in
+                        </button>
 
-                <button className=" mt-10 p-3 w-80 font-medium text-blue-600 text-lg hover:bg-blue-500 hover:text-white border-2 border-blue-500 rounded-xl" >Log in</button>
-                    <div className="flex flex-col items-center">
-                        <p className=" mt-6">Don't have account</p>
-                        <Link to="/signup" className="pl-3 pr-3 pt-1 pb-1 font-medium text-center mt-2 text-blue-600 text-lg hover:bg-blue-500 hover:text-white border-2 border-blue-500 rounded-xl">Sign up</Link>
+                       
+                        <div className="flex flex-col items-center">
+                            <p className="mt-4">Don't have an account?</p>
+                            <Link
+                                to="/signup"
+                                className="mt-2 px-4 py-2 font-medium text-blue-600 text-lg border-2 border-blue-500 rounded-xl hover:bg-blue-500 hover:text-white transition"
+                            >
+                                Sign up
+                            </Link>
+                        </div>
                     </div>
-                </div>
-            </form>
-        </div>
-    );
+                </form>
+            </div>
+            </>
+        )
+       
+        );
+    
 }
 
 export default Login;

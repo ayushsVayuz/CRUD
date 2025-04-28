@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
 import './App.css';
 import CreateUser from './components/userComponents/CreateUser.jsx';
@@ -10,38 +10,12 @@ import Login from './components/authentication/Login.jsx';
 import ProtectedRoute from './components/authentication/ProtectedRoute.jsx';
 import Signup from './components/authentication/Signup.jsx';
 import { ToastContainer } from 'react-toastify';
+import { HelmetProvider } from "react-helmet-async";
 
 
 function App() {
 
   const [isOnline, setOnline] = useState(navigator.onLine);
-
-  const token = localStorage.getItem("token"); 
-  const expiresAt = localStorage.getItem("expiresAt");
-
-  let isAuthenticated = false;
-
-  if (token && expiresAt) {
-      const expiryTime = Number(expiresAt);
-  
-      if (Date.now() > expiryTime) {
-          localStorage.removeItem("token");
-          localStorage.removeItem("expiresAt");
-      } else {
-          isAuthenticated = true;
-      }
-  }
-  
-  const [user, setUser] = useState(isAuthenticated);
-   
-  
-  // params:isAuthenticated(is user authenticated or not ) , set user's value either true or false based on parameter's value
-  useEffect(() => {
-    if (!isAuthenticated) { 
-      setUser(false); 
-    }
-  }, [isAuthenticated]); 
-  
    
   const router = createBrowserRouter([
     {
@@ -50,7 +24,7 @@ function App() {
     },
     {
       path: "/login",
-      element:<Login setUser={setUser}/>
+      element:<Login/>
     },
     {
       path: "/signup",
@@ -58,29 +32,42 @@ function App() {
     },
     {
       path: "/home",
-      element:<ProtectedRoute user={user}><NavigationBar/><HomePage/></ProtectedRoute>
+      element:<ProtectedRoute ><NavigationBar/><HomePage/></ProtectedRoute>
     },
     {
       path: "/about",
-      element:<ProtectedRoute user={user}><NavigationBar/><AboutPage/></ProtectedRoute>
+      element:<ProtectedRoute ><NavigationBar/><AboutPage/></ProtectedRoute>
     },
     {
       path: "/createUser",
-      element: <ProtectedRoute user={user}><NavigationBar/><CreateUser/></ProtectedRoute>
+      element: <ProtectedRoute ><NavigationBar/><CreateUser/></ProtectedRoute>
     },
     {
       path:"/updateUser/:id",
-      element:<ProtectedRoute user={user}><NavigationBar/><UpdateUser/></ProtectedRoute>
+      element:<ProtectedRoute ><NavigationBar/><UpdateUser/></ProtectedRoute>
     }
   ])
 
   return (
+    <HelmetProvider>
     <div>
       {
         isOnline == true ? <RouterProvider router={router} /> : <h1 className='text-center mt-60 mb-60 h-screen text-[40px]'>You are not connected to internet.</h1>
       }
-            <ToastContainer />
+            <ToastContainer 
+              position="bottom-right"  
+              autoClose={2000} 
+              hideProgressBar={false} 
+              newestOnTop={true} 
+              closeOnClick 
+              rtl={false} 
+              pauseOnFocusLoss 
+              draggable 
+              pauseOnHover 
+            />
+
     </div>
+    </HelmetProvider>
   )
 }
 

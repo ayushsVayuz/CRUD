@@ -1,16 +1,19 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
-
 function NavigationBar() {
     return (
-        <nav className="grid grid-cols-2 gap-150 bg-sky-500">
-            <h1 className="pl-30 text-[40px]">CRUD</h1>
-            <div className="grid grid-cols-2 gap-15 text-[20px] pt-3 w-50 ml-30">
-                <Link to="/home" className="w-20 hover:text-white font-semibold">Home</Link>
-                <Link to="/about" className=" w-20 hover:text-white font-semibold">About</Link>
+        <nav className="bg-sky-500 p-4">
+            <div className="max-w-6xl mx-auto flex justify-between items-center">
+             
+                <h1 className="text-2xl sm:text-3xl font-bold text-white">CRUD</h1>
+
+              
+                <div className="flex gap-6 text-lg">
+                    <Link to="/home" className="hover:text-white font-semibold">Home</Link>
+                    <Link to="/about" className="hover:text-white font-semibold">About</Link>
+                </div>
             </div>
-           
         </nav>
     );
 }

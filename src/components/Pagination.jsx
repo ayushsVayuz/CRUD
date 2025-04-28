@@ -3,7 +3,7 @@ import ReactPaginate from 'react-paginate';
 import { useSearchParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const Pagination = (props) => {
+const Pagination = ({currentPage}) => {
     
     const [itemOffset , setItemOffset] = useState(0);
     const [searchParams, setSearchParams] = useSearchParams();
@@ -14,16 +14,12 @@ const Pagination = (props) => {
     let itemPerPage = 6;
     
     
-    const pageCount = Math.ceil(totalData/itemPerPage);
+    const pageCount = Math.ceil((totalData || 1) / itemPerPage);
 
-    // params: event(user action), returns searchParams for desired page number and set value of itemOffset for next page in sequence
+
+    // Handles page changes with page number provided from search params 
     const handlePageChange = (event) => {
-        
-        const newOffset = (event.selected * itemPerPage) % totalData; 
-        
-        setItemOffset(newOffset);
-        setSearchParams({page:event.selected+1});
-       
+        setSearchParams(prevParams => ({ ...prevParams, page: event.selected + 1 }));    
     } 
 
     return(
@@ -32,9 +28,11 @@ const Pagination = (props) => {
             <ReactPaginate
                 breakLabel="..."
                 nextLabel='Next >'
+                activeClassName="bg-blue-500 text-white rounded-lg px-2"
                 onPageChange={handlePageChange}
                 pageRangeDisplayed={5}
                 pageCount={pageCount}
+                forcePage={Number(currentPage) - 1}
                 previousLabel="< Previous" 
                 className='flex gap-3'
             />
