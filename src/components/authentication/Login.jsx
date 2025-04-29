@@ -13,19 +13,27 @@ function Login() {
     const {
         control,
         handleSubmit,
+        watch,
         formState: { errors },
-    } = useForm({ mode: "onChange" }); 
+    } = useForm({
+        mode: "onChange",
+        defaultValues: { email: "", password: "" }
+    });
 
     const dispatch = useDispatch();
-    const { loading, token } = useSelector((state) => state.user);
+    const { loginLoader, token } = useSelector((state) => state.user);
+
+    const formData = watch();
+    const isValid = Object.keys(errors).length === 0 && Object.values(formData).every(value => value.trim() !== "");
+
 
     // Handles user login and dispatch authentication action using redux
     const handleLogin = async (data) => {
-        let formData = { 
-            email: data?.email,
-            password: data?.password };
-        
-            dispatch(authenticateUser(formData));
+        let formData = new FormData();
+        formData.append("email", data?.email);
+        formData.append("password", data?.password);
+
+        dispatch(authenticateUser(formData));
     };
 
     // Redirects user to homepage after successful login 
@@ -36,21 +44,21 @@ function Login() {
     }, [token, navigate]);
 
     return (
-       
-            
 
-        loading ? (
+
+
+        loginLoader ? (
             <div className="flex justify-center h-screen items-center">
                 <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
             </div>
         ) : (
-           
+
             <div className="min-h-screen flex items-center justify-center">
-                <form onSubmit={handleSubmit(handleLogin)} className="p-6 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto">
+                <form onSubmit={handleSubmit(handleLogin)} className="p-6 shadow-2xl  bg-white rounded-lg w-full max-w-md mx-auto">
                     <h1 className="text-center text-blue-600 text-3xl font-medium">Welcome Back</h1>
 
                     <div className="flex flex-col space-y-4 mt-6">
-                      
+
                         <label className="text-sm font-medium text-gray-700 mb-1">
                             Email <span className="text-red-500">*</span>
                         </label>
@@ -61,7 +69,7 @@ function Login() {
                                 required: "Email is required",
                                 pattern: {
                                     value: /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                    message: "Invalid email format. Must start with at least 2 characters",
+                                    message: "Invalid email format.",
                                 },
                             }}
                             render={({ field }) => (
@@ -70,27 +78,20 @@ function Login() {
                                         {...field}
                                         type="text"
                                         autoFocus
-                                        max={40}
+                                        maxLength={40}
                                         inputMode="email"
-                                        className={`p-3 w-full text-base border ${
-                                            errors.email ? "border-red-500" : "border-blue-500"
-                                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                        className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
+                                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your email"
                                         onChange={(e) => handleEmailChange({ e, field })}
                                     />
-                                    {errors.email && (
-                                        <span className="absolute right-3 top-3 text-red-500 text-lg group">
-                                            ⚠️
-                                            <span className="absolute bottom-0 left-0 bg-red-500 text-white text-xs rounded p-1 opacity-0 group-hover:opacity-100 transition">
-                                                {errors.email?.message}
-                                            </span>
-                                        </span>
-                                    )}
+
+                                    <p className="text-red-500 text-[13px] -mb-3 min-h-[20px]">{errors.email?.message}</p>
                                 </div>
                             )}
                         />
 
-                      
+                        
                         <label className="text-sm font-medium text-gray-700 mb-1">
                             Password <span className="text-red-500">*</span>
                         </label>
@@ -112,14 +113,12 @@ function Login() {
                                         autoFocus
                                         inputMode="text"
                                         maxLength={50}
-                                        className={`p-3 w-full text-base border ${
-                                            errors.password ? "border-red-500" : "border-blue-500"
-                                        } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                        className={`p-3 w-full text-base border ${errors.password ? "border-red-500" : "border-blue-500"
+                                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your password"
                                         onChange={(e) => handlePasswordChange({ e, field })}
                                     />
 
-                                 
                                     <span
                                         className="absolute right-10 top-4 cursor-pointer text-gray-600"
                                         onClick={() => setShowPassword((prev) => !prev)}
@@ -127,29 +126,22 @@ function Login() {
                                         {showPassword ? <FaEyeSlash /> : <FaEye />}
                                     </span>
 
-                                    {errors.password && (
-                                        <span className="absolute right-3 top-3 text-red-500 text-lg group">
-                                            ⚠️
-                                            <span className="absolute bottom-0 left-0 bg-red-500 text-white text-xs rounded p-1 opacity-0 group-hover:opacity-100 transition">
-                                                {errors.password?.message}
-                                            </span>
-                                        </span>
-                                    )}
+                                    <p className="text-red-500 text-[13px] -mb-3 min-h-[20px]">{errors.password?.message }</p>
                                 </div>
                             )}
                         />
 
-                       
+
                         <button
-                            disabled={Object.keys(errors).length > 0}
-                            className={`mt-6 p-3 w-full font-medium text-lg rounded-xl transition duration-200 ease-in-out ${
-                                Object.keys(errors).length > 0 ?  "bg-gray-400 cursor-not-allowed text-white" : "bg-blue-500 hover:bg-blue-600 text-white"
-                            }`}
+                            disabled={!isValid}
+                            className={`mt-6 p-3 w-full font-medium text-lg rounded-xl ${!isValid ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
                         >
                             Log in
                         </button>
 
-                       
+
+
+
                         <div className="flex flex-col items-center">
                             <p className="mt-4">Don't have an account?</p>
                             <Link
@@ -163,9 +155,9 @@ function Login() {
                 </form>
             </div>
         )
-       
-        );
-    
+
+    );
+
 }
 
 export default Login;

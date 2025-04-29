@@ -8,7 +8,7 @@ import ConfirmModal from "../ConfirmModel";
 function UsersList() {
   const [searchParams] = useSearchParams();
   const dispatch = useDispatch();
-  const { usersData, loading, totalData } = useSelector((state) => state.user);
+  const { usersData, getAllUsersLoader, totalData } = useSelector((state) => state.user);
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -22,12 +22,12 @@ function UsersList() {
     dispatch(fetchAllUsersData({ pageNumber, searchQuery, pageLimit }));
   }, [dispatch, pageNumber, searchQuery, totalData]);
 
-  
+
   // Pop up the confirmation modal and store the selected user id for deletion of record
   const handleDeleteClick = (id) => {
     setSelectedUserId(id);
     setModalOpen(true);
-  
+
 
   };
 
@@ -38,7 +38,7 @@ function UsersList() {
 
   };
 
-  return loading ? (
+  return getAllUsersLoader ? (
     <div className="flex justify-center h-40 items-center">
       <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
     </div>
@@ -82,13 +82,15 @@ function UsersList() {
                     >
                       Update
                     </Link>
-                    <button
-                      type="button"
-                      className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-                      onClick={() => handleDeleteClick(data?._id)}
-                    >
-                      Delete
-                    </button>
+
+                      <button
+                        type="button"
+                        className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+                        onClick={() => handleDeleteClick(data?._id)}
+                      >
+                        Delete
+                      </button>
+                    
                   </td>
                 </tr>
               ))

@@ -8,8 +8,10 @@ export const handleNameChange = ({e,field}) => {
 
 // params: event(user action), field(existing data of user), returns user's email
 export const handleEmailChange = ({e,field}) => {
-  e.target.value = e.target.value.trim();
-  field.onChange(e);
+  if (e.target.value) {  
+    e.target.value = e.target.value.replace(/\s/g, ""); 
+  }
+    field.onChange(e);
 };
 
 
@@ -38,6 +40,9 @@ export const handleAboutChange = ({ e, field }) => {
 
 // params: event(user action), field(existing data of user), returns user's password
 export const handlePasswordChange = ({e,field}) => { 
-  e.target.value = e.target.value.trim();
+  if (e.target.value) {  
+    e.target.value = e.target.value.replace(/\s/g, ""); 
+  }
+
   field.onChange(e);
 }

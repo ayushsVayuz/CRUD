@@ -6,115 +6,134 @@ import { toast } from 'react-toastify';
 export const userSlice = createSlice({
     name: "userData",
     initialState :{ 
-        loading:false,
+        loginLoader:false,
+        signupLoader:false,
+        signupSuccess:false,
+        formLoader:false,
+        createUserLoader:false,
+        updateUserLoader:false,
+        deleteUserLoader:false,
+        isUpdated:false,
         payload:null,
         token: null,
         usersData:[],
-        selectedUser: null, 
+        selectedUser: null,
         totalData:0
     } ,
     reducers: {},
     extraReducers:(builder) => {
         builder
         .addCase(authenticateUser.pending, (state,action) => {
-            state.loading = true
+            state.loginLoader = true
         })
         .addCase(authenticateUser.fulfilled, (state, action) => {
             
             if (action.payload?.success && action.payload?.data?.token) {
                 const { token } = action.payload.data;
                 
-                const expiresAt = Date.now() + 120 * 60 * 1000;
                 localStorage.setItem("token", token);
-                localStorage.setItem("expiresAt", expiresAt);
         
                 state.token = token;
-                state.loading = true;
-                toast.success("Login successful!");
+                state.loginLoader = true;
             } 
         })
         .addCase(authenticateUser.rejected, (state,action) => {
-            state.loading = false
+            state.loginLoader = false
             toast.error("Invalid login response. Please try again.");
         })
         .addCase(registerUser.pending, (state) => {
-            state.loading = true;
+            state.signupLoader = true
+            state.signupSuccess = false
         })
-        .addCase(registerUser.fulfilled, (state, action) => {
-            if (action.payload?.success) {
-                toast.success("User registered successfully!");
-            } 
-            state.loading = false;
+        .addCase(registerUser.fulfilled, (state, action) => { 
+            state.signupLoader = false;
+            state.signupSuccess = true
         })
         .addCase(registerUser.rejected, (state, action) => {
-            state.loading = false;
+            state.signupLoader = false;
+            state.signupSuccess = false
             toast.error("Failed to register user: " + (action.error?.message || "Unknown error"));
         })
         .addCase(fetchAllUsersData.pending, (state, action) => {
-            state.loading = true         
+            state.getAllUsersLoader = true         
         })
         .addCase(fetchAllUsersData.fulfilled, (state, action) => {
             if (action.payload && action.payload.data) {
                 state.usersData = action.payload.data;
                 state.totalData = action.payload.totalData;
             }
-            state.loading = false;
+            state.getAllUsersLoader = false;
         })
         .addCase(fetchAllUsersData.rejected, (state, action) =>{
-            state.loading = false
+            state.getAllUsersLoader = false
             toast.error("Failed to fetch users: " + (action.error.message || "Unknown error"));
         })
         .addCase(deleteUser.pending, (state, action) => {
-            toast.info("removing the user");
+            state.deleteUserLoader = true
         })
         .addCase(deleteUser.fulfilled, (state, action) => {
             state.usersData = state.usersData.filter((user) => user._id !== action.payload);
             state.totalData -= 1
-            toast.success("User removed "); 
+            state.deleteUserLoader = false
+
         })
         
         .addCase(deleteUser.rejected, (state, action) => {
+            state.deleteUserLoader = false
             toast.error("Failed to delete user: " + (action.error.message || "Unknown error"));       
         })
         .addCase(postUserData.pending, (state, action) => {
-            state.loading = true     
+            state.createUserLoader = true
+            state.formLoader = true
+
         })
         .addCase(postUserData.fulfilled, (state, action) => {
             if (action.payload && action.payload.data) { 
                 state.usersData.push(action.payload.data); 
                 state.totalData += 1;
+                state.createUserLoader = false;
+                state.formLoader = false;
+
+                toast.success("User created.")
             }
-            state.loading = false;
-            toast.success("User created.")
+            
         })
         .addCase(postUserData.rejected, (state, action) => {
-            state.loading = false;
+            state.createUserLoader = false;
+            state.formLoader = false;
+
+
             toast.error("Failed to create user: " + action.error.message);
         })
         .addCase(getSpecificUserData.pending, (state, action) => {
-            state.loading = true  
         })
         .addCase(getSpecificUserData.fulfilled, (state, action) => {
             state.selectedUser  = action.payload.data
-            state.loading = false
+            
         })
         .addCase(getSpecificUserData.rejected, (state, action) => {
-            state.loading = false;
-            toast.error("Failed to fetch user: " + action.error.message);
+            toast.error("Failed to fetch user data: " + action.error.message);
         })
         .addCase(updateUserData.pending, (state, action) => {
-            state.loading = true
+            state.updateUserLoader = true
+            state.formLoader = true
+
         })
         .addCase(updateUserData.fulfilled, (state, action) => {
             const updatedUser = action.payload.data;
             state.usersData = state.usersData.map(user =>
                 user._id === updatedUser._id ? updatedUser : user
             );
-            state.loading = false;
+
+            state.updateUserLoader = false;
+            state.formLoader = false
+
             toast.success("User updated");
         })
         .addCase(updateUserData.rejected, (state, action) => {
-            state.loading = false;
+            state.updateUserLoader = false;
+            state.formLoader = false
+
             toast.error("Failed to update user: " + action.error.message);
         })
     }
