@@ -39,16 +39,16 @@ function AboutPage() {
 
             <div className="flex justify-center gap-6">
                 <a href="https://www.instagram.com/sharmaayushay/" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="public\instagram.png" alt="Instagram" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="instagram.png" alt="Instagram" />
                 </a>
                 <a href="https://twitter.com/sharmaayushay" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="public\twitter.png" alt="Twitter" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="twitter.png" alt="Twitter" />
                 </a>
                 <a href="https://www.facebook.com/profile.php?id=100009380654938&sk=about" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="public\facebook.png" alt="Facebook" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="facebook.png" alt="Facebook" />
                 </a>
                 <a href="https://www.linkedin.com/in/ayush-sharma-39a042272" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="public\linkedin.png" alt="LinkedIn" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="linkedin.png" alt="LinkedIn" />
                 </a>
             </div>
 
