@@ -12,7 +12,7 @@ function AboutPage() {
             <div className="flex justify-center">
                 <img 
                     className="h-40 w-40 sm:h-60 sm:w-60 lg:h-80 lg:w-80 rounded-full object-cover"
-                    src="public\WhatsApp Image 2025-04-13 at 19.26.15_d4e26ecc.jpg" 
+                    src="WhatsApp Image 2025-04-13 at 19.26.15_d4e26ecc.jpg" 
                     alt="Profile"
                 />
             </div>
