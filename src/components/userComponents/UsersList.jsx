@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import Pagination from "../Pagination";
-import { useDispatch, useSelector } from "react-redux";
-import { deleteUser, fetchAllUsersData } from "../../actions/Action";
 import ConfirmModal from "../ConfirmModel";
+import userStore from "../../store/Store";
+import TableShimmer from "../shimmer/TableShimmer";
 
 function UsersList() {
   const [searchParams] = useSearchParams();
-  const dispatch = useDispatch();
-  const { usersData, getAllUsersLoader, totalData } = useSelector((state) => state.user);
 
+  const { getAllUsersLoader, fetchAllUsersData, usersData, deleteUser } = userStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
 
@@ -19,29 +18,27 @@ function UsersList() {
 
   // Fetches all users list when the page number or search query changes
   useEffect(() => {
-    dispatch(fetchAllUsersData({ pageNumber, searchQuery, pageLimit }));
-  }, [dispatch, pageNumber, searchQuery, totalData]);
+   fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+  }, [pageNumber, searchQuery]);
+
+  
 
 
   // Pop up the confirmation modal and store the selected user id for deletion of record
   const handleDeleteClick = (id) => {
     setSelectedUserId(id);
     setModalOpen(true);
-
-
   };
 
   // Confirm deletion of selected user and close the modal
-  const handleConfirmDelete = () => {
-    dispatch(deleteUser(selectedUserId));
+  const handleConfirmDelete = async () => {
+    await (deleteUser(selectedUserId));
     setModalOpen(false);
 
   };
 
   return getAllUsersLoader ? (
-    <div className="flex justify-center h-40 items-center">
-      <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
-    </div>
+    <TableShimmer/>
   ) : (
     <>
 
@@ -83,6 +80,7 @@ function UsersList() {
                       Update
                     </Link>
 
+                    
                       <button
                         type="button"
                         className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
@@ -90,7 +88,7 @@ function UsersList() {
                       >
                         Delete
                       </button>
-                    
+                  
                   </td>
                 </tr>
               ))

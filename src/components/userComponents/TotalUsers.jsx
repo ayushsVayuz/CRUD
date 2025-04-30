@@ -1,9 +1,9 @@
 import  React from 'react'
-import { useSelector } from 'react-redux'
+import userStore from '../../store/Store'
 
 const TotalUsers = () => {
 
-      const { totalData } = useSelector((state) => state.user);
+      const { totalData} = userStore();
 
     return (
         <div>

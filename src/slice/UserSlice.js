@@ -83,7 +83,6 @@ export const userSlice = createSlice({
             toast.error("Failed to delete user: " + (action.error.message || "Unknown error"));       
         })
         .addCase(postUserData.pending, (state, action) => {
-            state.createUserLoader = true
             state.formLoader = true
 
         })
@@ -91,7 +90,6 @@ export const userSlice = createSlice({
             if (action.payload && action.payload.data) { 
                 state.usersData.push(action.payload.data); 
                 state.totalData += 1;
-                state.createUserLoader = false;
                 state.formLoader = false;
 
                 toast.success("User created.")
@@ -99,7 +97,6 @@ export const userSlice = createSlice({
             
         })
         .addCase(postUserData.rejected, (state, action) => {
-            state.createUserLoader = false;
             state.formLoader = false;
 
 
@@ -115,7 +112,6 @@ export const userSlice = createSlice({
             toast.error("Failed to fetch user data: " + action.error.message);
         })
         .addCase(updateUserData.pending, (state, action) => {
-            state.updateUserLoader = true
             state.formLoader = true
 
         })
@@ -125,13 +121,11 @@ export const userSlice = createSlice({
                 user._id === updatedUser._id ? updatedUser : user
             );
 
-            state.updateUserLoader = false;
             state.formLoader = false
 
             toast.success("User updated");
         })
         .addCase(updateUserData.rejected, (state, action) => {
-            state.updateUserLoader = false;
             state.formLoader = false
 
             toast.error("Failed to update user: " + action.error.message);

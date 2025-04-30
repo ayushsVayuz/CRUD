@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import { useSearchParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import userStore from '../store/Store';
 
 const Pagination = ({currentPage}) => {
     
     const [itemOffset , setItemOffset] = useState(0);
     const [searchParams, setSearchParams] = useSearchParams();
 
-    const {totalData } = useSelector((state) => state.user);
+    const {totalData } = userStore();
 
 
     let itemPerPage = 6;
