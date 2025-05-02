@@ -82,8 +82,8 @@ function Login() {
                                         {...field}
                                         type="text"
                                         autoFocus
-                                        maxLength={44}
                                         inputMode="email"
+                                        maxLength={44}  
                                         className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your email"

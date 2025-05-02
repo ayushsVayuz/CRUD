@@ -11,6 +11,7 @@ import { ToastContainer } from 'react-toastify';
 import Layout from './components/layout/Layout.jsx';
 import UserForm from './components/userComponents/UserForm.jsx';
 import CheckInternetConnection from './components/CheckInternetConnection.jsx';
+import UserDetails from './components/userComponents/UserDetails.jsx';
 
 
 
@@ -47,11 +48,28 @@ function App() {
         },
         {
           path: "/createUser",
-          element: <ProtectedRoute ><NavigationBar /><UserForm updating={false} /></ProtectedRoute>
+          element: <ProtectedRoute ><NavigationBar />
+          <UserForm 
+            updating={false}
+            showDetails={false} />
+          </ProtectedRoute>
         },
         {
           path: "/updateUser/:id",
-          element: <ProtectedRoute ><NavigationBar /><UserForm updating={true} /></ProtectedRoute>
+          element: <ProtectedRoute ><NavigationBar />
+          <UserForm 
+            updating={true}
+            showDetails={false}
+           />
+          </ProtectedRoute>
+        },
+        {
+          path: "/userDetails",
+          element: <ProtectedRoute ><NavigationBar />
+          <UserForm 
+            updating={false}
+            showDetails={true}/>
+          </ProtectedRoute>
         }
       ]
     },

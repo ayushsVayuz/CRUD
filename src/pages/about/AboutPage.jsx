@@ -54,7 +54,7 @@ function AboutPage() {
 
 
             <div className="mt-6">
-                <a href="mailto:sharmaayushay@gmail.com">
+                <a href="mailto:sharmaayushay@gmail.com?subject=What you're interested in"  target="_blank">
                     <button className="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 mb-5">
                         Email, Perhaps?
                     </button>

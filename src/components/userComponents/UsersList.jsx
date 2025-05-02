@@ -11,16 +11,20 @@ function UsersList() {
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loadingItemId, setLoadingItemId] = useState(null);
+  const [actionID, setActionID] = useState(false);
 
   let searchQuery = searchParams.get("search");
   let pageNumber = Number(searchParams.get("page")) || 1;
   const pageLimit = 6;
 
+
   /**
    * Fetches user data based on pagination and search filters.
    */
+  console.log(usersData, "usersData12");
+
   useEffect(() => {
-    fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+    usersData && usersData?.length === 0 && fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
   }, [pageNumber, searchQuery, pageLimit]);
 
 
@@ -42,13 +46,11 @@ function UsersList() {
     setLoadingItemId(selectedUserId)
     await (deleteUser(selectedUserId));
 
-    if (usersData.length < 6) {
-      await fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
-    }
-
+    // if (usersData.length < 6) {
+    //   await fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+    // }
     setLoadingItemId(null)
     selectedUserId(null)
-
   };
 
 
@@ -61,6 +63,9 @@ function UsersList() {
     }
   }, [loadingItemId]);
 
+  function handleAction () {
+    setAction(true)
+  }
 
   return getAllUsersLoader ? (
     <TableShimmer />
@@ -98,25 +103,46 @@ function UsersList() {
                   <td className="p-2 border-2 text-left border-blue-400">{data?.email}</td>
                   <td className="p-2 border-2 text-left border-blue-400">{data?.phone}</td>
                   <td className="flex justify-center gap-3 p-2">
-                    <Link
-                      to={`/updateUser/${data?._id}`}
-                      className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm"
-                    >
-                      Update
-                    </Link>
                     {
-                      loadingItemId === data._id ?
-                        <div className="flex justify-center h-10 items-center">
-                          <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
-                        </div>
-                        :
-                        <button
-                          type="button"
-                          className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-                          onClick={() => handleDeleteClick(data?._id)}
-                        >
-                          Delete
-                        </button>
+                      actionID !== data?._id ?(
+                      
+                        <p onClick={() => setActionID(data?._id)}>...</p>
+                      ):(
+                        <ul className="grid grid-rows-3">
+                          <li>
+                           
+                            
+                            <Link
+                              to={`/updateUser/${data?._id}`}
+                              className=" px-3 py-1 rounded-lg text-sm"
+                            >
+                              Update
+                            </Link></li>
+                          <li> {
+                            loadingItemId === data?._id ?(
+                              <div className="flex justify-center h-10 items-center">
+                                <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
+                              </div>
+                            ):(
+                              <button
+                                type="button"
+                                className=" px-3 py-1 rounded-lg text-sm"
+                                onClick={() => handleDeleteClick(data?._id)}
+                              >
+                                Delete
+                                
+                              </button>
+                            )
+                          }</li>
+                          <li> 
+                            <button
+                                type="button"
+                                className= " px-3 py-1 rounded-lg text-sm"
+                              >
+                                User Details
+                              </button></li>
+                        </ul>
+                        )
                     }
                   </td>
                 </tr>

@@ -9,12 +9,12 @@ import Store from './store/Store.js'
 
 createRoot(document.getElementById('root')).render(
 
-  <StrictMode>
+  // <StrictMode>
     <Provider store={Store}>
     <div className='font-cambria '>
       <App />
     </div>
     </Provider>
-  </StrictMode>,
+  // </StrictMode>
   
 )

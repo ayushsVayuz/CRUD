@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
@@ -10,9 +10,13 @@ import { toast } from "react-toastify";
 
 const UserForm = ({ updating }) => {
 
+   
+    const [searchParams] = useSearchParams();
     let navigate = useNavigate();
     const { id } = useParams();
-    const { usersData, selectedUser, formLoader, getSpecificUserData, postUserData, updateUserData, getAllUsersLoader } = userStore();
+
+    const { usersData, selectedUser, formLoader, getSpecificUserData, postUserData, updateUserData, getSpecificUserLoader } = userStore();
+    let pageNumber = Number(searchParams.get("page")) || 1;
 
     const {
         handleSubmit,
@@ -31,7 +35,6 @@ const UserForm = ({ updating }) => {
     const [file, setFile] = useState();
     const [fileName, setFileName] = useState("");
 
-
     const defaultValues = {
         name: "",
         email: "",
@@ -43,7 +46,6 @@ const UserForm = ({ updating }) => {
     /**
      * @param {Event} e - The event triggered by the back action.
      */
-
     function backToHome(e) {
         e.preventDefault();
         navigate("/home")
@@ -71,20 +73,32 @@ const UserForm = ({ updating }) => {
         }
     }
 
+        useEffect(() => {
+            window.addEventListener("beforeunload", alertUser);
+            return () => {
+                window.removeEventListener("beforeunload", alertUser);
+            };
+        }, [formLoader]);
+    
+    const alertUser = (e) => {
+        e.preventDefault();
+        e.returnValue = "";
+    };
+
     if (updating == true) {
 
-    /**
-     * @param {string} id - Unique user identifier for retrieval.
-     */
+        /**
+         * @param {string} id - Unique user identifier for retrieval.
+         */
         useEffect(() => {
             (getSpecificUserData(id));
         }, [id])
 
 
 
-    /**
-     * Updates form values with data from the selected user.
-     */
+        /**
+         * Updates form values with data from the selected user.
+         */
         useEffect(() => {
 
             setValue("name", selectedUser?.name)
@@ -104,7 +118,6 @@ const UserForm = ({ updating }) => {
      * @return {Promise<void>} Sends user data to API and redirects upon success.
      */
     const onSubmit = async (data) => {
-
         let formData = new FormData();
         formData.append("name", data?.name);
         formData.append("email", data?.email);
@@ -120,13 +133,14 @@ const UserForm = ({ updating }) => {
                 const response = await postUserData(formData)
 
                 if (response?.data?.statusCode === 201) {
-                    navigate("/home")
+                    navigate("/home");
                 }
 
             } else {
                 const response = await updateUserData({ formData, id })
-                if (response.data.statusCode === 200) {
-                    navigate("/home")
+                console.log("response put",response);
+                if (response?.data?.statusCode === 200) {
+                    navigate(-1);
                 }
 
 
@@ -140,12 +154,18 @@ const UserForm = ({ updating }) => {
 
 
     return (
-     
+        getSpecificUserLoader ?
+            <div className="flex justify-center h-screen items-center">
+                <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
+            </div>
+            :
             <div className="min-h-screen flex items-center justify-center">
                 <form
                     onSubmit={handleSubmit(onSubmit)}
                     className="pl-6 pr-6 pb-6  h-190 mt-5 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto"
                 >
+
+
                     <div className="flex flex-col gap-2">
                         <div className="flex  items-center">
                             <button
@@ -158,6 +178,7 @@ const UserForm = ({ updating }) => {
                                 {updating ? "Update User Details" : "User Data"}
                             </h1>
                         </div>
+
                         <label className="text-sm font-medium text-gray-700 -mb-1">
                             Full Name <span className="text-red-500">*</span>
                         </label>
@@ -173,6 +194,8 @@ const UserForm = ({ updating }) => {
                             }}
                             render={({ field }) => (
                                 <div className="relative">
+                                    {console.log("formLoader from useform", formLoader)}
+
                                     <input
                                         {...field}
                                         type="text"
@@ -183,6 +206,7 @@ const UserForm = ({ updating }) => {
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your full name"
                                         onChange={(e) => handleNameChange({ e, field })}
+                                        disabled={formLoader ? true : false}
                                     />
 
                                     <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.name?.message}</p>
@@ -216,6 +240,7 @@ const UserForm = ({ updating }) => {
                                         autoFocus
                                         maxLength={44}
                                         inputMode="email"
+                                        disabled={formLoader ? true : false}
                                         className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your email"
@@ -247,7 +272,7 @@ const UserForm = ({ updating }) => {
                                     }
                                     return true;
                                 },
-                        
+
                             }}
                             render={({ field }) => (
                                 <div className="relative">
@@ -257,6 +282,7 @@ const UserForm = ({ updating }) => {
                                         type="tel"
                                         autoFocus
                                         inputMode="numeric"
+                                        disabled={formLoader ? true : false}
                                         className={`p-3 w-full text-base border ${errors.phone ? "border-red-500" : "border-blue-500"
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your phone number"
@@ -290,6 +316,7 @@ const UserForm = ({ updating }) => {
                                         autoFocus
                                         inputMode="text"
                                         maxLength={44}
+                                        disabled={formLoader ? true : false}
                                         className={`p-3 w-full text-base border ${errors.location ? "border-red-500" : "border-blue-500"
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your location"
@@ -323,6 +350,7 @@ const UserForm = ({ updating }) => {
                                         autoFocus
                                         inputMode="text"
                                         maxLength={100}
+                                        disabled={formLoader ? true : false}
                                         className={`p-3 w-full text-base border ${errors.about ? "border-red-500" : "border-blue-500"
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Tell us about yourself"
@@ -337,7 +365,7 @@ const UserForm = ({ updating }) => {
 
                         <div className="flex gap-2 h-20 items-center ">
                             <label htmlFor="files" className="btn ml-2">Select Image(Optional)</label>
-                            <input type="file" id='files' style={{ 'display': 'none' }} name="image" onChange={handleImageChange} accept="image/*" className="p-3 w-60 text-lg border-2 border-white  text-gray-500" />
+                            <input type="file" disabled={formLoader ? true : false} id='files' style={{ 'display': 'none' }} name="image" onChange={handleImageChange} accept="image/*" className="p-3 w-60 text-lg border-2 border-white  text-gray-500" />
                             {
                                 fileName ? fileName : <p></p>
                             }
@@ -360,6 +388,7 @@ const UserForm = ({ updating }) => {
 
                     </div>
 
+
                     <div className={updating ? ` ` : `grid grid-cols-2 mt-2 gap-5 items-center`}>
                         <input type="reset" onClick={() => reset(defaultValues)} className={updating ? `hidden ` : `h-12 border-2 border-red-700 text-red-700 rounded-2xl font-medium hover:bg-red-700 hover:text-white text-lg`} />
                         {
@@ -371,6 +400,7 @@ const UserForm = ({ updating }) => {
                                 <button
                                     disabled={!isValid}
                                     className={` h-12  w-full font-medium text-lg rounded-xl ${!isValid ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+
                                 >
                                     Submit
                                 </button>

@@ -10,14 +10,15 @@ const userStore = create((set, get) => ({
   signupLoader: false,
   getAllUsersLoader: false,
   getSpecificUserLoader: false,
-  createUserLoader: false,
-  updateUserLoader: false,
   payload: null,
   token: null,
   usersData: [],
   selectedUser: null,
+  userDataObject:null,
   updatedUser: null,
   totalData: 0,
+  formLoader : false,
+  user : null,
 
   /**
    * Authenticates user with API.
@@ -125,10 +126,10 @@ const userStore = create((set, get) => ({
         import.meta.env.VITE_API + `/users/${userId}`
       );
 
-      set((state) => ({
-        usersData: state.usersData.filter((user) => user._id !== userId),
+      set({
+        usersData: get().usersData.filter((user) => user._id !== userId),
         totalData: get().totalData - 1,
-      }));
+      });
       return response;
     } catch (error) {
       toast.error("Deletion of user failed.");
@@ -180,8 +181,9 @@ const userStore = create((set, get) => ({
       set((state) => ({
         formLoader: false,
         totalData: get().totalData + 1,
-        usersData: [...state.usersData, response.data.data],
+        usersData: [response.data.data, ...get().usersData],
       }));
+      
       toast.success("User created.");
 
       return response;
@@ -200,7 +202,7 @@ const userStore = create((set, get) => ({
    */
   async updateUserData(payload) {
     set({ formLoader: true });
-
+  
     try {
       const response = await axios.put(
         import.meta.env.VITE_API + `/users/${payload.id}`,
@@ -211,24 +213,32 @@ const userStore = create((set, get) => ({
           },
         }
       );
+  
+      const updatedUser = response?.data?.data;
+      const currentUsers = get().usersData;
+  
+      console.log("Updated user:", updatedUser);
+      console.log("Before update usersData:", currentUsers);
+  
+      // Update the usersData array
+      const updatedUsersData = currentUsers.map(user =>
+        user._id === payload.id ? updatedUser : user
+      );
+  
       set({
         formLoader: false,
-        updatedUser: response.data.data,
-        usersData: Array.isArray((usersData) =>
-          usersData?.map((user) =>
-            user._id === updatedUser._id ? updatedUser : user
-          )
-        ),
+        usersData: updatedUsersData,
       });
+  
       toast.success("User updated.");
       return response;
     } catch (error) {
-      set({
-        formLoader: false,
-      });
+      console.log("Error in updateUserData:", error);
+      set({ formLoader: false });
       toast.error("User update failed!");
     }
-  },
+  }
+  
 }));
 
 export default userStore;

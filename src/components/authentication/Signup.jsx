@@ -143,6 +143,12 @@ function Signup() {
                                     value: /^[0-9]{10}$/,
                                     message: "Phone Number must be exactly 10 digits",
                                 },
+                                validate: (value) => {
+                                    if (/^(.)\1{9}$/.test(value)) {
+                                        return "Phone number cannot have all identical digits.";
+                                    }
+                                    return true;
+                                },
                             }}
                             render={({ field }) => (
                                 <div className="relative">
