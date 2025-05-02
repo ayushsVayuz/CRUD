@@ -7,38 +7,63 @@ import TableShimmer from "../shimmer/TableShimmer";
 
 function UsersList() {
   const [searchParams] = useSearchParams();
-
-  const { getAllUsersLoader, fetchAllUsersData, usersData, deleteUser } = userStore();
+  const { getAllUsersLoader, fetchAllUsersData, usersData, deleteUser, deleteUserLoader } = userStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
+  const [loadingItemId, setLoadingItemId] = useState(null);
 
-  let searchQuery = searchParams.get("search") || "";
+  let searchQuery = searchParams.get("search");
   let pageNumber = Number(searchParams.get("page")) || 1;
   const pageLimit = 6;
 
-  // Fetches all users list when the page number or search query changes
+  /**
+   * Fetches user data based on pagination and search filters.
+   */
   useEffect(() => {
-   fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
-  }, [pageNumber, searchQuery]);
-
-  
+    fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+  }, [pageNumber, searchQuery, pageLimit]);
 
 
-  // Pop up the confirmation modal and store the selected user id for deletion of record
+
+
+  /**
+   * @param {string} id - Unique identifier of the user to be deleted.
+   */
   const handleDeleteClick = (id) => {
     setSelectedUserId(id);
     setModalOpen(true);
   };
 
-  // Confirm deletion of selected user and close the modal
+  /**
+   * Deletes the selected user and refreshes the list if necessary.
+   */
   const handleConfirmDelete = async () => {
+
+    setLoadingItemId(selectedUserId)
     await (deleteUser(selectedUserId));
-    setModalOpen(false);
+
+    if (usersData.length < 6) {
+      await fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+    }
+
+    setLoadingItemId(null)
+    selectedUserId(null)
 
   };
 
+
+  /**
+   * Automatically closes the confirmation modal when loading completes.
+  */
+  useEffect(() => {
+    if (!loadingItemId) {
+      setModalOpen(false);
+    }
+  }, [loadingItemId]);
+
+
   return getAllUsersLoader ? (
-    <TableShimmer/>
+    <TableShimmer />
   ) : (
     <>
 
@@ -79,16 +104,20 @@ function UsersList() {
                     >
                       Update
                     </Link>
-
-                    
-                      <button
-                        type="button"
-                        className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
-                        onClick={() => handleDeleteClick(data?._id)}
-                      >
-                        Delete
-                      </button>
-                  
+                    {
+                      loadingItemId === data._id ?
+                        <div className="flex justify-center h-10 items-center">
+                          <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
+                        </div>
+                        :
+                        <button
+                          type="button"
+                          className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"
+                          onClick={() => handleDeleteClick(data?._id)}
+                        >
+                          Delete
+                        </button>
+                    }
                   </td>
                 </tr>
               ))

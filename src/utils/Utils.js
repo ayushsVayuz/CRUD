@@ -1,4 +1,7 @@
-// params: event(user action), field(existing data of user), returns user's name 
+/**
+ * @param {Event} e - The input event containing name data.
+ * @param {Object} field - React Hook Form field object.
+ */
 export const handleNameChange = ({e,field}) => {
     e.target.value = e.target.value.trimStart().replace(/\s+/g, ' ');
     if (!/^[a-zA-Z ]*$/.test(e.target.value)) return;
@@ -6,7 +9,10 @@ export const handleNameChange = ({e,field}) => {
   }
 
 
-// params: event(user action), field(existing data of user), returns user's email
+/**
+ * @param {Event} e - The input event containing email data.
+ * @param {Object} field - React Hook Form field object.
+ */
 export const handleEmailChange = ({e,field}) => {
   if (e.target.value) {  
     e.target.value = e.target.value.replace(/\s/g, ""); 
@@ -15,14 +21,20 @@ export const handleEmailChange = ({e,field}) => {
 };
 
 
-// params: event(user action), field(existing data of user), return user phone number
+/**
+ * @param {Event} e - The input event containing phone number data.
+ * @param {Object} field - React Hook Form field object.
+ */
 export const handlePhoneChange = ({ e, field }) => {
     e.target.value = e.target.value.replace(/\D/g, ""); // Remove non-numeric characters
     field.onChange(e);
   };
 
 
-// params: event(user action), field(existing data of user), return user's location
+/**
+ * @param {Event} e - The input event containing location data.
+ * @param {Object} field - React Hook Form field object.
+ */
 export const handleLocationChange = ({ e, field }) => {
     e.target.value = e.target.value.trimStart().replace(/\s+/g, ' ');
     
@@ -31,14 +43,20 @@ export const handleLocationChange = ({ e, field }) => {
     field.onChange(e);
 };
 
-// params: event(user action), field(existing data of user), return description of user
+/**
+ * @param {Event} e - The input event containing about section data.
+ * @param {Object} field - React Hook Form field object.
+ */
 export const handleAboutChange = ({ e, field }) => {
   e.target.value = e.target.value.trimStart().replace(/\s+/g, ' ');
   field.onChange(e);
 };
 
 
-// params: event(user action), field(existing data of user), returns user's password
+/**
+ * @param {Event} e - The input event containing password data.
+ * @param {Object} field - React Hook Form field object.
+ */
 export const handlePasswordChange = ({e,field}) => { 
   if (e.target.value) {  
     e.target.value = e.target.value.replace(/\s/g, ""); 

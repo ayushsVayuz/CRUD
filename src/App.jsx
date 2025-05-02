@@ -10,12 +10,12 @@ import Signup from './components/authentication/Signup.jsx';
 import { ToastContainer } from 'react-toastify';
 import Layout from './components/layout/Layout.jsx';
 import UserForm from './components/userComponents/UserForm.jsx';
+import CheckInternetConnection from './components/CheckInternetConnection.jsx';
 
 
 
 function App() {
 
-  const [isOnline, setOnline] = useState(navigator.onLine);
 
   const router = createBrowserRouter([
     {
@@ -29,7 +29,7 @@ function App() {
 
         },
         {
-          index:true,
+          index: true,
           path: "/login",
           element: <Login />
         },
@@ -47,11 +47,11 @@ function App() {
         },
         {
           path: "/createUser",
-          element: <ProtectedRoute ><NavigationBar /><UserForm updating={false}/></ProtectedRoute>
+          element: <ProtectedRoute ><NavigationBar /><UserForm updating={false} /></ProtectedRoute>
         },
         {
           path: "/updateUser/:id",
-          element: <ProtectedRoute ><NavigationBar /><UserForm updating={true}/></ProtectedRoute>
+          element: <ProtectedRoute ><NavigationBar /><UserForm updating={true} /></ProtectedRoute>
         }
       ]
     },
@@ -59,16 +59,16 @@ function App() {
   ])
 
   return (
-
     <div>
-      {
-        isOnline == true ? <RouterProvider router={router} /> : <h1 className='text-center mt-60 mb-60 h-screen text-[40px]'>You are not connected to internet.</h1>
-      }
-      <ToastContainer
-        position="bottom-right"
-        autoClose={2000}
-      />
+      <CheckInternetConnection>
+        <RouterProvider router={router} />
 
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+
+        />
+     </CheckInternetConnection>
     </div>
 
   )

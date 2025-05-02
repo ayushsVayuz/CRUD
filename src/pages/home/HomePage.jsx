@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import TotalUsers from "../../components/userComponents/TotalUsers";
 import UsersList from "../../components/userComponents/UsersList";

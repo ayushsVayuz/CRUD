@@ -1,7 +1,10 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 
-// Authenticate user
+/**
+ * @param {Object} formData - User login credentials.
+ * @return {Promise<Object>} Authentication response data.
+ */
 export const authenticateUser = createAsyncThunk("authenticateUser", 
     async(formData) => {
         const response = await axios.post(
@@ -16,7 +19,10 @@ export const authenticateUser = createAsyncThunk("authenticateUser",
     }
 )
 
-// Register user
+/**
+ * @param {Object} formData - User registration details.
+ * @return {Promise<Object>} Registration response data.
+ */
 export const registerUser = createAsyncThunk("registerUser" ,
     async(formData) => {
         const response = await axios.post(
@@ -33,7 +39,10 @@ export const registerUser = createAsyncThunk("registerUser" ,
 )
 
 
-// Get all users
+/**
+ * @param {Object} payload - Contains pagination and search parameters.
+ * @return {Promise<Object>} List of users based on provided filters.
+ */
 export const fetchAllUsersData = createAsyncThunk("fetchAllUsersData",
     async (payload) => {        
         const response = await axios.get(import.meta.env.VITE_API + `/users`,{
@@ -48,8 +57,10 @@ export const fetchAllUsersData = createAsyncThunk("fetchAllUsersData",
     }
 )
 
-// Post user data
-
+/**
+ * @param {Object} formData - User data to be created.
+ * @return {Promise<Object>} Created user information.
+ */
 export const postUserData = createAsyncThunk("postUserData",
     async (formData) => {
         try {
@@ -63,7 +74,10 @@ export const postUserData = createAsyncThunk("postUserData",
     }
 );
 
-// Get specific user data
+/**
+ * @param {string} userId - Unique identifier of the user.
+ * @return {Promise<Object>} User details.
+ */
 export const getSpecificUserData = createAsyncThunk("getSpecificUserData", 
     async (userId) => {
         
@@ -76,7 +90,11 @@ export const getSpecificUserData = createAsyncThunk("getSpecificUserData",
     }
 )
 
-// Update a user data
+
+/**
+ * @param {Object} payload - Contains user ID and updated form data.
+ * @return {Promise<Object>} Updated user details.
+ */
 export const updateUserData = createAsyncThunk("updateUserData",
     
     async (payload) => {
@@ -97,7 +115,12 @@ export const updateUserData = createAsyncThunk("updateUserData",
    
 )
 
-// Delete a user
+
+/**
+ * @param {string} userId - Unique identifier of the user to be deleted.
+ * @return {Promise<string>} ID of the deleted user.
+ */
+
 
   export const deleteUser = createAsyncThunk("deleteUser",
     async (userId) => {

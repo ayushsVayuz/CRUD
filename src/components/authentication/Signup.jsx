@@ -10,7 +10,7 @@ function Signup() {
 
 
     const navigate = useNavigate();
-    const { signupLoader, registerUser, signupSuccess } = userStore();
+    const { signupLoader, registerUser } = userStore();
     const [showPassword, setShowPassword] = useState(false);
 
     const {
@@ -27,7 +27,10 @@ function Signup() {
     const formData = watch();
     const isValid = Object.keys(errors).length === 0 && Object.values(formData).every(value => value?.trim() !== "");
 
-    // Handle user signup and automatic login when successfully registered
+    /**
+     * @param {Object} data - Contains user registration details.
+     * @return {Promise<void>} Registers the user and redirects to login upon success.
+     */
     const handleSignup = async (data) => {
 
         let formData = new FormData();
@@ -37,14 +40,13 @@ function Signup() {
         formData.append("password", data?.password);
 
         try {
-            await (registerUser(formData)).then(() => {
-                if (signupSuccess) {
-                    navigate("/login");
-                }
-            })
+            const response = await (registerUser(formData))
+            if (response.data.statusCode === 201) {
+                navigate("/login")
+            }
 
         } catch (error) {
-            toast.error("Error: " + (error?.message || "Something went wrong"));
+            console.log("Error: " + (error?.message || "Something went wrong"));
         }
     };
 

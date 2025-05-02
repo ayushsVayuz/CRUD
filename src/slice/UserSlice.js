@@ -2,7 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { authenticateUser, registerUser, fetchAllUsersData, deleteUser, postUserData, getSpecificUserData, updateUserData } from "../actions/Action";
 import { toast } from 'react-toastify';
 
-// It defines the user slice, which contains actions and reducers for managing user's state
+/**
+ * Defines the user slice containing actions and reducers for managing user state.
+ */
 export const userSlice = createSlice({
     name: "userData",
     initialState :{ 

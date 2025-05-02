@@ -25,7 +25,10 @@ function Login() {
     const isValid = Object.keys(errors).length === 0 && Object.values(formData).every(value => value.trim() !== "");
 
 
-    // Handles user login and dispatch authentication action using redux
+    /**
+     * @param {Object} data - Contains user credentials.
+     * @return {Promise<void>} Authenticates the user.
+     */
     const handleLogin = async (data) => {
 
         let formData = new FormData();
@@ -36,7 +39,11 @@ function Login() {
 
     };
 
-    // Redirects user to homepage after successful login 
+
+
+    /**
+     * Keeps track of authentication state and navigates to home when token is available.
+     */
     useEffect(() => {
         if (token) {
             navigate("/home");

@@ -1,41 +1,46 @@
-import React, { useState } from 'react';
+import React from 'react';
 import ReactPaginate from 'react-paginate';
 import { useSearchParams } from 'react-router-dom';
 import userStore from '../store/Store';
 
-const Pagination = ({currentPage}) => {
-    
-    const [itemOffset , setItemOffset] = useState(0);
-    const [searchParams, setSearchParams] = useSearchParams();
+const Pagination = ({ currentPage }) => {
 
-    const {totalData } = userStore();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { totalData } = userStore();
 
-
-    let itemPerPage = 6;
-    
-    
-    const pageCount = Math.ceil((totalData || 1) / itemPerPage);
+  let itemsPerPage = 6;
+  const pageCount = Math.ceil((totalData || 1) / itemsPerPage);
 
 
-    // Handles page changes with page number provided from search params 
-    const handlePageChange = (event) => {
-        setSearchParams(prevParams => ({ ...prevParams, page: event.selected + 1 }));    
-    } 
+  /**
+   * @param {Object} event - The pagination event data.
+  */
+  const handlePageChange = (event) => {
+    console.log("event.selected", event.selected);
 
-    return(
+    setSearchParams(prevParams => ({ ...prevParams, page: event.selected + 1 }));
+  }
+
+  return (
     <div className='flex justify-center p-5'>
-        
-            <ReactPaginate
-                breakLabel="..."
-                nextLabel='Next >'
-                activeClassName="bg-blue-500 text-white rounded-lg px-2"
-                onPageChange={handlePageChange}
-                pageRangeDisplayed={5}
-                pageCount={pageCount}
-                forcePage={Number(currentPage) - 1}
-                previousLabel="< Previous" 
-                className='flex gap-3'
-            />
+
+      <ReactPaginate
+        previousLabel={<button
+          disabled={Number(searchParams.get("page")) === 1 || !searchParams.get("page")}
+          className={`${Number(searchParams.get("page")) === 1 || !searchParams.get("page") ? "text-gray-400 cursor-not-allowed" : " "}`}
+        >Previous</button>}
+        nextLabel={<button
+          disabled={Number(searchParams.get("page")) === pageCount}
+          className={`${Number(searchParams.get("page")) === pageCount ? "text-gray-400 cursor-not-allowed" : " "}`}
+        >Next</button>}
+        breakLabel="..."
+        activeClassName="bg-blue-500 text-white rounded-lg px-2"
+        onPageChange={handlePageChange}
+        pageRangeDisplayed={5}
+        pageCount={pageCount}
+        forcePage={Number(currentPage) - 1}
+        className='flex gap-3'
+      />
     </div>
   )
 }

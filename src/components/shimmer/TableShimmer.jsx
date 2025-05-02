@@ -2,40 +2,54 @@ import React from 'react'
 
 const TableShimmer = () => {
   return (
-    <div>
-       <div className="overflow-x-auto  mx-auto max-w-6xl p-4">
-       <table className="w-full border border-sky-800 text-sm sm:text-md">
-       <thead>
-            <tr className="h-12 bg-sky-100">
-              <th className="border-2 border-blue-400 p-2  border-r-2"></th>
-              <th className="border-2 border-blue-400 p-2 ">
-                <div className='bg-gray-500'></div>
-              </th>
-              <th className="border-2 border-blue-400 p-2 "></th>
-              <th className="border-2 border-blue-400 p-2 "></th>
-              <th className="border-2 border-blue-400 p-2 "></th>
-            </tr>
-          </thead>
-          <tbody>
-                <tr  className="border-2 h-14 border-blue-400 text-center">
-                  <td className=" border-r-2  w-20 border-blue-400">  </td>
-                  <td className="w-95 gap-2 p-2">
-                    <img className="w-10 h-10 rounded-full object-cover" />
-                    <p className="text-start font-medium truncate w-36 sm:w-48"></p>
-                     </td>
-                  <td className="p-2 border-2 w-65 border-blue-400"></td>
-                  <td className="p-2 border-2 w-35 border-blue-400"></td>
-                  <td className="flex justify-center gap-3 p-2">
-                    <button className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm" > </button>
-                    <button className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm"> </button>
-                  </td>
-                </tr>  
-               
-               
-          </tbody>
-        </table>
+
+
+    <div role="status" className="w-full h-100 mt-10 p-4 space-y-4 border border-gray-200 divide-y divide-gray-200 rounded-sm shadow-sm animate-pulse dark:divide-gray-400 md:p-6 dark:border-gray-400">
+      <div className="flex items-center justify-between">
+        <div>
+          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-24 mb-2.5"></div>
+          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-300"></div>
         </div>
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-12"></div>
+      </div>
+      <div className="flex items-center justify-between pt-4">
+        <div>
+          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-24 mb-2.5"></div>
+          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-300"></div>
+        </div>
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-12"></div>
+      </div>
+      <div className="flex items-center justify-between pt-4">
+        <div>
+          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-24 mb-2.5"></div>
+          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-300"></div>
+        </div>
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-12"></div>
+      </div>
+      <div className="flex items-center justify-between pt-4">
+        <div>
+          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-24 mb-2.5"></div>
+          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-300"></div>
+        </div>
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-12"></div>
+      </div>
+      <div className="flex items-center justify-between pt-4">
+        <div>
+          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-24 mb-2.5"></div>
+          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-300"></div>
+        </div>
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-12"></div>
+      </div>
+      <div className="flex items-center justify-between pt-4">
+        <div>
+          <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-24 mb-2.5"></div>
+          <div className="w-32 h-2 bg-gray-200 rounded-full dark:bg-gray-300"></div>
+        </div>
+        <div className="h-2.5 bg-gray-300 rounded-full dark:bg-gray-400 w-12"></div>
+      </div>
+      <span className="sr-only">Loading...</span>
     </div>
+
   )
 }
 
