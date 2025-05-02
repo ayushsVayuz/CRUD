@@ -2,7 +2,7 @@ import React from "react";
 
 const ConfirmModal = ({ isOpen, onClose, onConfirm, message }) => {
   if (!isOpen) return null; 
-
+//
   return (
     <div className="fixed inset-0 flex items-center justify-center  "> 
       <div className="bg-white p-6 rounded-lg shadow-2xl text-center ">
