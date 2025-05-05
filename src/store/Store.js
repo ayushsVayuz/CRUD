@@ -2,6 +2,7 @@ import { create } from "zustand";
 import axios from "axios";
 import { toast } from "react-toastify";
 
+
 /**
  * Creates a Zustand store to handle user actions and state updates.
  */
@@ -13,12 +14,16 @@ const userStore = create((set, get) => ({
   payload: null,
   token: null,
   usersData: [],
-  selectedUser: null,
-  userDataObject:null,
+  selectedUser: null,     
+  userDataObject: null,
   updatedUser: null,
   totalData: 0,
-  formLoader : false,
-  user : null,
+  formLoader: false,
+  user: null,
+  statusLoader:null,
+  error: null,
+  userStatus :null,
+  abortController: null,
 
   /**
    * Authenticates user with API.
@@ -73,7 +78,7 @@ const userStore = create((set, get) => ({
 
       set({
         signupLoader: false,
-        payload: response.data.data,
+         payload: response.data.data,
       });
       return response;
     } catch (error) {
@@ -90,29 +95,48 @@ const userStore = create((set, get) => ({
    * @return {Promise<Object>} API response.
    */
   async fetchAllUsersData(payload) {
-    set({ getAllUsersLoader: true });
+    const controller = new AbortController();
+    set({
+      getAllUsersLoader: true,
+      error: null,
+    });
 
     try {
-      const response = await axios.get(import.meta.env.VITE_API + `/users`, {
-        params: {
-          page: payload?.pageNumber,
-          limit: payload?.pageLimit,
-          search: payload?.searchQuery,
+      const response = await axios.get(
+        import.meta.env.VITE_API + `/users`,
+        {
+          params: {
+            page: payload?.pageNumber,
+            limit: payload?.pageLimit,
+            search: payload?.searchQuery,
+          },
         },
-      });
+        { signal: controller.signal }
+      );
 
       set({
         usersData: response.data.data,
         totalData: response.data.totalData,
         getAllUsersLoader: false,
       });
+
+      setTimeout( () => {
+        controller.abort();
+      }, 20000)
+
       return response;
+
     } catch (error) {
-      set({
-        getAllUsersLoader: false,
-      });
-      toast.error("Fetching users data failed!");
+      if (error.name === "AbortError") {
+        toast.error("Fetch Aborted due to slow Api response");
+      } else {
+        set({
+          getAllUsersLoader: false,
+        });
+        toast.error("Fetching users data failed!");
+      }
     }
+
   },
 
   /**
@@ -120,7 +144,7 @@ const userStore = create((set, get) => ({
    * @param {string} userId - User's unique identifier.
    * @return {Promise<Object>} API response.
    */
-  async deleteUser(userId) {
+  async deleteUser(userId, searchParams) {
     try {
       const response = await axios.delete(
         import.meta.env.VITE_API + `/users/${userId}`
@@ -130,6 +154,12 @@ const userStore = create((set, get) => ({
         usersData: get().usersData.filter((user) => user._id !== userId),
         totalData: get().totalData - 1,
       });
+
+      await get().fetchAllUsersData({
+        pageNumber: searchParams.get("page"),
+        pageLimit: 6,
+      });
+
       return response;
     } catch (error) {
       toast.error("Deletion of user failed.");
@@ -142,7 +172,10 @@ const userStore = create((set, get) => ({
    * @return {Promise<Object>} API response.
    */
   async getSpecificUserData(userId) {
-    set({ getSpecificUserLoader: true });
+
+    set({ 
+      getSpecificUserLoader: true,
+     });
     try {
       const response = await axios
         .get(import.meta.env.VITE_API + `/users/${userId}`)
@@ -167,6 +200,8 @@ const userStore = create((set, get) => ({
    * @return {Promise<Object>} API response.
    */
   async postUserData(formData) {
+
+    
     set({ formLoader: true });
 
     try {
@@ -183,7 +218,7 @@ const userStore = create((set, get) => ({
         totalData: get().totalData + 1,
         usersData: [response.data.data, ...get().usersData],
       }));
-      
+
       toast.success("User created.");
 
       return response;
@@ -202,7 +237,7 @@ const userStore = create((set, get) => ({
    */
   async updateUserData(payload) {
     set({ formLoader: true });
-  
+
     try {
       const response = await axios.put(
         import.meta.env.VITE_API + `/users/${payload.id}`,
@@ -213,23 +248,22 @@ const userStore = create((set, get) => ({
           },
         }
       );
-  
+
       const updatedUser = response?.data?.data;
       const currentUsers = get().usersData;
-  
+
       console.log("Updated user:", updatedUser);
       console.log("Before update usersData:", currentUsers);
-  
-      // Update the usersData array
-      const updatedUsersData = currentUsers.map(user =>
+
+      const updatedUsersData = currentUsers.map((user) =>
         user._id === payload.id ? updatedUser : user
       );
-  
+
       set({
         formLoader: false,
         usersData: updatedUsersData,
       });
-  
+
       toast.success("User updated.");
       return response;
     } catch (error) {
@@ -237,8 +271,51 @@ const userStore = create((set, get) => ({
       set({ formLoader: false });
       toast.error("User update failed!");
     }
-  }
-  
+  },
+
+  async updateStatus(payload) {
+    set({statusLoader:true})
+
+    console.log("from status route1");
+    try {
+      const response = await axios.patch(
+        import.meta.env.VITE_API + `/users/${payload.id}/status`,
+        {status:payload.newStatus},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      console.log("response1", response);
+
+      const currentUsers = get().usersData;
+
+      const updatedUsersData = currentUsers.map((user) => {
+        if (user._id === payload.id) {
+          return {
+            ...user, 
+            status: payload.newStatus
+          };
+        }
+
+        
+        return user;
+      });
+      
+      set({
+        usersData: updatedUsersData,
+        statusLoader:false
+      });
+      return response;
+    } catch (error) {
+      console.log("Error in updateUserData:", error);
+      set({statusLoader:false})
+      toast.error("Status change failed!");
+    }
+  },
+
 }));
+
 
 export default userStore;

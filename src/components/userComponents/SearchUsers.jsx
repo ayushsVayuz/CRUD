@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FaSearch } from "react-icons/fa";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
 
 const SearchUsers = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -28,19 +31,26 @@ const SearchUsers = () => {
   const handleSearchChange = (e) => {
     let trimmedValue = e.target.value.trimStart().replace(/\s+/g, ' ');
     setSearchQuery(trimmedValue)
+
+    if (trimmedValue === "") {
+      setSearchParams({});
+      navigate(-1); 
+    }
+  
   };
 
   return (
-    <form className="font-medium text-sky-800" onSubmit={handleSubmit}>
+    <form className="font-medium text-sky-600" onSubmit={handleSubmit}>
       <input
         type="search"
-        className="w-40 text-center pl-2 border-2 border-white border-b-blue-700"
+        className="w-40 focus:outline-none focus:ring-0 text-center pl-2 border-2 border-white border-b-sky-600"
         onChange={handleSearchChange}
         name="search"
         placeholder="Type to search"
         value={searchQuery}
       />
-      <button type="submit">Search</button>
+      
+      <button className="ml-4" type="submit"><FontAwesomeIcon icon={faSearch } /></button>
     </form>
   );
 };

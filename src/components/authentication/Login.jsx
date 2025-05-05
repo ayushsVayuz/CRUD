@@ -81,7 +81,6 @@ function Login() {
                                     <input
                                         {...field}
                                         type="text"
-                                        autoFocus
                                         inputMode="email"
                                         maxLength={44}  
                                         className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
@@ -116,7 +115,6 @@ function Login() {
                                     <input
                                         {...field}
                                         type={showPassword ? "text" : "password"}
-                                        autoFocus
                                         inputMode="text"
                                         maxLength={44}
                                         className={`p-3 w-full text-base border ${errors.password ? "border-red-500" : "border-blue-500"

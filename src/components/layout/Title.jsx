@@ -22,7 +22,10 @@ const Title = () => {
             document.title = "Create User | CRUD"
         }else if(path.includes('/updateUser')) {
             document.title = "Update User | CRUD"
-        }   
+        }
+        else if(path.includes('/userDetails')) {
+            document.title = "User Details | CRUD"
+        }    
       }, [location.pathname]);
   
     return (

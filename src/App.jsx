@@ -40,35 +40,39 @@ function App() {
         },
         {
           path: "/home",
-          element: <ProtectedRoute ><NavigationBar /><HomePage /></ProtectedRoute>
+          element: <ProtectedRoute >
+            <NavigationBar />
+            <HomePage />
+          </ProtectedRoute>
         },
         {
           path: "/about",
-          element: <ProtectedRoute ><NavigationBar /><AboutPage /></ProtectedRoute>
+          element: <ProtectedRoute >
+            <NavigationBar />
+            <AboutPage />
+          </ProtectedRoute>
         },
         {
           path: "/createUser",
-          element: <ProtectedRoute ><NavigationBar />
-          <UserForm 
-            updating={false}
-            showDetails={false} />
+          element: <ProtectedRoute >
+            <NavigationBar />
+            <UserForm
+              updating={false} />
           </ProtectedRoute>
         },
         {
           path: "/updateUser/:id",
-          element: <ProtectedRoute ><NavigationBar />
-          <UserForm 
-            updating={true}
-            showDetails={false}
-           />
+          element: <ProtectedRoute >
+            <NavigationBar />
+            <UserForm
+              updating={true} />
           </ProtectedRoute>
         },
         {
-          path: "/userDetails",
-          element: <ProtectedRoute ><NavigationBar />
-          <UserForm 
-            updating={false}
-            showDetails={true}/>
+          path: "/userDetails/:id",
+          element: <ProtectedRoute >
+            <NavigationBar />
+            <UserDetails />
           </ProtectedRoute>
         }
       ]
@@ -86,7 +90,7 @@ function App() {
           autoClose={2000}
 
         />
-     </CheckInternetConnection>
+      </CheckInternetConnection>
     </div>
 
   )

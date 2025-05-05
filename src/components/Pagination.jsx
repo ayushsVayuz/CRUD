@@ -30,8 +30,8 @@ const Pagination = ({ currentPage }) => {
           className={`${Number(searchParams.get("page")) === 1 || !searchParams.get("page") ? "text-gray-400 cursor-not-allowed" : " "}`}
         >Previous</button>}
         nextLabel={<button
-          disabled={Number(searchParams.get("page")) === pageCount}
-          className={`${Number(searchParams.get("page")) === pageCount ? "text-gray-400 cursor-not-allowed" : " "}`}
+          disabled={Number(searchParams.get("page")) === pageCount || pageCount == 1}
+          className={`${Number(searchParams.get("page")) === pageCount || pageCount == 1 ? "text-gray-400 cursor-not-allowed" : " "}`}
         >Next</button>}
         breakLabel="..."
         activeClassName="bg-blue-500 text-white rounded-lg px-2"

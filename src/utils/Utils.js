@@ -64,3 +64,8 @@ export const handlePasswordChange = ({e,field}) => {
 
   field.onChange(e);
 }
+
+export const handleToggleChange = ({e, field}) => {
+  if(e.target.checked)
+  field.onChange(e) 
+}

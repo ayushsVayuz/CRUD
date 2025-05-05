@@ -9,7 +9,7 @@ const HomePage = () => {
 
   return (
       <div className="pt-10 px-4 sm:px-8 lg:px-16 xl:px-24 flex justify-center">
-        <div className="max-w-6xl w-full">
+        <div className="w-full">
        
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
    
@@ -22,7 +22,7 @@ const HomePage = () => {
             <div className="flex flex-col sm:flex-row gap-15 items-center justify-center">
               <Link  
                 to="/createUser"  
-                className="bg-sky-800 hover:bg-sky-600 px-4 py-2 font-medium text-white text-center border-2 border-sky-800 rounded-3xl w-28 sm:w-32 md:w-32">
+                className="bg-sky-600 hover:bg-sky-800 px-4 py-2 font-medium text-white text-center rounded-3xl w-28 sm:w-32 md:w-32">
                 Create User
               </Link>
 

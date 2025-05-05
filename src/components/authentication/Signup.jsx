@@ -78,7 +78,6 @@ function Signup() {
                                     <input
                                         {...field}
                                         type="text"
-                                        autoFocus
                                         inputMode="text"
                                         maxLength={44}
                                         className={`p-3 w-full text-base border ${errors.fullName ? "border-red-500" : "border-blue-500"
@@ -115,7 +114,6 @@ function Signup() {
                                     <input
                                         {...field}
                                         type="text"
-                                        autoFocus
                                         maxLength={44}
                                         inputMode="email"
                                         className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
@@ -156,7 +154,6 @@ function Signup() {
                                         {...field}
                                         maxLength={10}
                                         type="tel"
-                                        autoFocus
                                         inputMode="numeric"
                                         className={`p-3 w-full text-base border ${errors.phoneNumber ? "border-red-500" : "border-blue-500"
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
@@ -188,7 +185,6 @@ function Signup() {
                                     <input
                                         {...field}
                                         type={showPassword ? "text" : "password"}
-                                        autoFocus
                                         maxLength={44}
                                         inputMode="text"
                                         className={`p-3 w-full text-base border ${errors.password ? "border-red-500" : "border-blue-500"

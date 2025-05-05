@@ -10,13 +10,13 @@ const ConfirmModal = ({ isOpen, onClose, onConfirm, message }) => {
         <div className="mt-4 flex justify-center gap-4">
           <button 
             onClick={onConfirm} 
-            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+            className="px-4 py-2 bg-green-800 text-white rounded-lg hover:bg-green-900 transition duration-300"
           >
             Yes, Delete
           </button>
           <button 
             onClick={onClose} 
-            className="px-4 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-800 transition duration-300"
           >
             Cancel
           </button>

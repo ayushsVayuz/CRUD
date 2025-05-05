@@ -3,17 +3,20 @@ import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
+import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange, handleToggleChange } from "../../utils/Utils";
 import { FaArrowLeft } from "react-icons/fa";
 import userStore from "../../store/Store";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const UserForm = ({ updating }) => {
 
-   
+
     const [searchParams] = useSearchParams();
     let navigate = useNavigate();
     const { id } = useParams();
+    const [isChecked, setIsChecked] = useState(false);
 
     const { usersData, selectedUser, formLoader, getSpecificUserData, postUserData, updateUserData, getSpecificUserLoader } = userStore();
     let pageNumber = Number(searchParams.get("page")) || 1;
@@ -28,7 +31,7 @@ const UserForm = ({ updating }) => {
         reset,
     } = useForm({
         mode: "onChange",
-        defaultValues: { name: "", email: "", phone: "", location: "", about: "" }
+        defaultValues: { name: "", email: "", phone: "", location: "", about: "", status:"" }
     });
 
     const [image, setImage] = useState()
@@ -41,6 +44,7 @@ const UserForm = ({ updating }) => {
         phone: "",
         location: "",
         about: "",
+        status:"",
     };
 
     /**
@@ -73,13 +77,17 @@ const UserForm = ({ updating }) => {
         }
     }
 
-        useEffect(() => {
-            window.addEventListener("beforeunload", alertUser);
-            return () => {
-                window.removeEventListener("beforeunload", alertUser);
-            };
-        }, [formLoader]);
     
+  
+
+
+    useEffect(() => {
+        window.addEventListener("beforeunload", alertUser);
+        return () => {
+            window.removeEventListener("beforeunload", alertUser);
+        };
+    }, [formLoader]);
+
     const alertUser = (e) => {
         e.preventDefault();
         e.returnValue = "";
@@ -106,13 +114,26 @@ const UserForm = ({ updating }) => {
             setValue("phone", selectedUser?.phone)
             setValue("location", selectedUser?.location)
             setValue("about", selectedUser?.about)
+            setValue("status", selectedUser?.status? true:false)
+            
         }, [selectedUser])
     }
-
+    console.log("selecteduser",selectedUser?.status);
 
     const formData = watch();
-    const isValid = Object.keys(errors).length === 0 && Object.values(formData).every(value => value?.trim() !== "");
-
+    const errorLength = Object.keys(errors).length === 0
+    const trimming = Object.values(formData).every(value => {
+        if (typeof value === 'string') {
+            return value.trim() !== "";
+          } else if (value === null || value === undefined) {
+            return false;
+          } else {
+              return true;
+          }
+    });
+    
+    const isValid = errorLength && trimming;
+        
     /**
      * @param {Object} data - Contains user details to be updated.
      * @return {Promise<void>} Sends user data to API and redirects upon success.
@@ -125,6 +146,8 @@ const UserForm = ({ updating }) => {
         formData.append("location", data?.location);
         formData.append("about", data?.about);
         formData.append("image", image);
+        formData.append("status",data?.status);
+        
 
         try {
             console.log("updating", updating)
@@ -138,7 +161,7 @@ const UserForm = ({ updating }) => {
 
             } else {
                 const response = await updateUserData({ formData, id })
-                console.log("response put",response);
+                console.log("response put", response);
                 if (response?.data?.statusCode === 200) {
                     navigate(-1);
                 }
@@ -155,258 +178,288 @@ const UserForm = ({ updating }) => {
 
     return (
         getSpecificUserLoader ?
-            <div className="flex justify-center h-screen items-center">
+            <div className="flex h-screen justify-center items-center mb-5">
                 <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
             </div>
             :
-            <div className="min-h-screen flex items-center justify-center">
+            <div className="min-h-screen grid ">
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="pl-6 pr-6 pb-6  h-190 mt-5 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto"
+                    className=" mt-10 pl-10 pr-10  h-125  ml-60 mr-60 shadow-2xl bg-white rounded-lg w-auto"
                 >
 
 
-                    <div className="flex flex-col gap-2">
-                        <div className="flex  items-center">
+                    <div className="grid grid-rows-2 ">
+                        <div className="flex h-20  items-center">
                             <button
                                 onClick={(e) => backToHome(e)}
-                                className=" h-15 text-blue-600  hover:text-sky-800 rounded-lg font-medium  transition duration-200"
+                                className=" text-blue-600  hover:text-sky-800 rounded-lg font-medium  transition duration-200"
                             >
                                 <FaArrowLeft size={"25px"} />
                             </button>
-                            <h1 className="pt-4 w-full text-center font-medium text-blue-600 text-3xl h-17">
+                            <h1 className="w-full text-center font-medium text-blue-600 text-3xl">
                                 {updating ? "Update User Details" : "User Data"}
                             </h1>
                         </div>
 
-                        <label className="text-sm font-medium text-gray-700 -mb-1">
-                            Full Name <span className="text-red-500">*</span>
-                        </label>
-                        <Controller
-                            name="name"
-                            control={control}
-                            rules={{
-                                required: "Full Name is required",
-                                minLength: {
-                                    value: 2,
-                                    message: "Full Name must be at least 2 characters",
-                                },
-                            }}
-                            render={({ field }) => (
-                                <div className="relative">
-                                    {console.log("formLoader from useform", formLoader)}
+                        <div className="grid grid-cols-2 gap-10 h-30">
 
-                                    <input
-                                        {...field}
-                                        type="text"
-                                        autoFocus
-                                        maxLength={44}
-                                        inputMode="text"
-                                        className={`p-3 w-full text-base border ${errors.name ? "border-red-500" : "border-blue-500"
-                                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                        placeholder="Enter your full name"
-                                        onChange={(e) => handleNameChange({ e, field })}
-                                        disabled={formLoader ? true : false}
-                                    />
+                            <div>
+                                <label className="text-sm font-medium text-gray-700 -mb-1">
+                                    Full Name <span className="text-red-500">*</span>
+                                </label>
+                                <Controller
+                                    name="name"
+                                    control={control}
+                                    rules={{
+                                        required: "Full Name is required",
+                                        minLength: {
+                                            value: 2,
+                                            message: "Full Name must be at least 2 characters",
+                                        },
+                                    }}
+                                    render={({ field }) => (
+                                        <div className="relative">
+                                            {console.log("formLoader from useform", formLoader)}
 
-                                    <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.name?.message}</p>
+                                            <input
+                                                {...field}
+                                                type="text"
+                                                maxLength={44}
+                                                inputMode="text"
+                                                className={`p-3 w-full text-base border ${errors.name ? "border-red-500" : "border-blue-500"
+                                                    } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                                placeholder="Enter your full name"
+                                                onChange={(e) => handleNameChange({ e, field })}
+                                                disabled={formLoader ? true : false}
+                                            />
+
+                                            <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.name?.message}</p>
+
+                                        </div>
+                                    )}
+                                />
+
+                                <label className="text-sm font-medium text-gray-700 -mb-1">
+                                    Email <span className="text-red-500">*</span>
+                                </label>
+                                <Controller
+                                    name="email"
+                                    control={control}
+                                    rules={{
+                                        required: "Email is required",
+                                        minLength: {
+                                            value: 3,
+                                            message: "Email must be at least 3 characters",
+                                        },
+                                        pattern: {
+                                            value: /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                                            message: "Invalid email format.",
+                                        },
+                                    }}
+                                    render={({ field }) => (
+                                        <div className="relative">
+                                            <input
+                                                {...field}
+                                                type="text"
+                                                maxLength={44}
+                                                inputMode="email"
+                                                disabled={formLoader ? true : false}
+                                                className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
+                                                    } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                                placeholder="Enter your email"
+                                                onChange={(e) => handleEmailChange({ e, field })}
+                                            />
+
+                                            <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.email?.message}</p>
+
+                                        </div>
+                                    )}
+                                />
+
+
+                                <label className="text-sm font-medium text-gray-700 -mb-1">
+                                    Phone Number <span className="text-red-500">*</span>
+                                </label>
+                                <Controller
+                                    name="phone"
+                                    control={control}
+                                    rules={{
+                                        required: "Phone Number is required",
+                                        pattern: {
+                                            value: /^[0-9]{10}$/,
+                                            message: "Phone Number must be exactly 10 digits",
+                                        },
+                                        validate: (value) => {
+                                            if (/^(.)\1{9}$/.test(value)) {
+                                                return "Phone number cannot have all identical digits.";
+                                            }
+                                            return true;
+                                        },
+
+                                    }}
+                                    render={({ field }) => (
+                                        <div className="relative">
+                                            <input
+                                                {...field}
+                                                maxLength={10}
+                                                type="tel"
+                                                inputMode="numeric"
+                                                disabled={formLoader ? true : false}
+                                                className={`p-3 w-full text-base border ${errors.phone ? "border-red-500" : "border-blue-500"
+                                                    } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                                placeholder="Enter your phone number"
+                                                onChange={(e) => handlePhoneChange({ e, field })}
+                                            />
+
+                                            <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.phone?.message}</p>
+
+                                        </div>
+                                    )}
+                                />
+
+                                <label className="text-sm font-medium text-gray-700 -mb-1">
+                                    Location <span className="text-red-500">*</span>
+                                </label>
+                                <Controller
+                                    name="location"
+                                    control={control}
+                                    rules={{
+                                        required: "Location is required",
+                                        minLength: {
+                                            value: 3,
+                                            message: "Location must be at least 3 characters",
+                                        },
+                                    }}
+                                    render={({ field }) => (
+                                        <div className="relative">
+                                            <input
+                                                {...field}
+                                                type="text"
+                                                inputMode="text"
+                                                maxLength={44}
+                                                disabled={formLoader ? true : false}
+                                                className={`p-3 w-full text-base border ${errors.location ? "border-red-500" : "border-blue-500"
+                                                    } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                                placeholder="Enter your location"
+                                                onChange={(e) => handleLocationChange({ e, field })}
+                                            />
+
+                                            <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.location?.message}</p>
+
+                                        </div>
+                                    )}
+                                />
+                            </div>
+
+                            <div>
+
+                                <label className="text-sm font-medium text-gray-700 -mb-1">
+                                    About <span className="text-red-500">*</span>
+                                </label>
+                                <Controller
+                                    name="about"
+                                    control={control}
+                                    rules={{
+                                        required: "About section is required",
+                                        minLength: {
+                                            value: 15,
+                                            message: "Must be at least 15 characters",
+                                        },
+                                    }}
+                                    render={({ field }) => (
+                                        <div className="relative">
+                                            <textarea
+                                                {...field}
+                                                type="text"
+                                                inputMode="text"
+                                                maxLength={100}
+                                                disabled={formLoader ? true : false}
+                                                className={`p-3 w-full text-base border ${errors.about ? "border-red-500" : "border-blue-500"
+                                                    } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
+                                                placeholder="Tell us about yourself"
+                                                onChange={(e) => handleAboutChange({ e, field })}
+                                            />
+
+                                            <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.about?.message}</p>
+
+                                        </div>
+                                    )}
+                                />
+
+                                <div className="flex flex-col sm:flex-row gap-4 items-center bg-gray-100 p-4 rounded-lg">
+                                    <label htmlFor="files" className="cursor-pointer bg-sky-600 hover:bg-sky-700 text-white px-4 py-2 rounded-lg font-medium transition duration-300">
+                                        Select Image(Optional)
+                                    </label>
+
+                                    <input type="file" disabled={formLoader} id='files' style={{ 'display': 'none' }} name="image" onChange={handleImageChange} accept="image/*" />
+                                    <p className="text-gray-600 font-medium truncate max-w-xs">{fileName || ""}</p>
+
+                                    {file ? (
+                                        <div className="flex items-center gap-4">
+
+                                            <img src={file} className="h-20 w-20 rounded-lg shadow-lg object-cover border-2 border-gray-300" alt="preview" />
+                                            <div className="relative w-full">
+                                                <button
+                                                    className="absolute top-[-65px] right-[-8px] text-2xl text-red-500 px-2 py-1 rounded-lg font-medium transition duration-300"
+                                                    onClick={() => {
+                                                        setFile(null);
+                                                        setImage(null);
+                                                        setFileName("");
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon={faXmark} />
+                                                </button>
+                                            </div>
+                                        </div>) : (
+                                        <p className="text-gray-400">No image selected</p>
+                                    )}
+
+
 
                                 </div>
-                            )}
-                        />
-
-                        <label className="text-sm font-medium text-gray-700 -mb-1">
-                            Email <span className="text-red-500">*</span>
-                        </label>
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{
-                                required: "Email is required",
-                                minLength: {
-                                    value: 3,
-                                    message: "Email must be at least 3 characters",
-                                },
-                                pattern: {
-                                    value: /^[a-zA-Z0-9._%+-]{3,}@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                                    message: "Invalid email format.",
-                                },
-                            }}
-                            render={({ field }) => (
-                                <div className="relative">
-                                    <input
-                                        {...field}
-                                        type="text"
-                                        autoFocus
-                                        maxLength={44}
-                                        inputMode="email"
-                                        disabled={formLoader ? true : false}
-                                        className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
-                                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                        placeholder="Enter your email"
-                                        onChange={(e) => handleEmailChange({ e, field })}
-                                    />
-
-                                    <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.email?.message}</p>
-
-                                </div>
-                            )}
-                        />
 
 
-                        <label className="text-sm font-medium text-gray-700 -mb-1">
-                            Phone Number <span className="text-red-500">*</span>
-                        </label>
-                        <Controller
-                            name="phone"
-                            control={control}
-                            rules={{
-                                required: "Phone Number is required",
-                                pattern: {
-                                    value: /^[0-9]{10}$/,
-                                    message: "Phone Number must be exactly 10 digits",
-                                },
-                                validate: (value) => {
-                                    if (/^(.)\1{9}$/.test(value)) {
-                                        return "Phone number cannot have all identical digits.";
+                                <label className="text-sm font-medium text-gray-700 -mb-1">
+                                    Active 
+                                </label>
+                                <Controller
+                                    name="status"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <div className="relative">
+
+                                            <input
+                                                {...field}
+                                                type="checkbox"
+                                                onChange={(e) => handleToggleChange({ e, field })}
+                                                checked = {field.value}
+                                            />
+                                        </div>
+                                    )}
+                                />
+
+
+                                <div className={updating ? ` ` : `grid grid-cols-2 mt-2 gap-5 items-center`}>
+                                    <input type="reset" onClick={() => reset(defaultValues)} className={updating ? `hidden ` : `h-12 mt-5 border-2 border-red-700 text-red-700 rounded-2xl font-medium hover:bg-red-700 hover:text-white text-lg`} />
+                                    {
+                                        formLoader ?
+                                            <div className="flex justify-center h-12 items-center">
+                                                <div className="border-4 mt-5 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
+                                            </div>
+                                            :
+                                            <button
+                                                disabled={!isValid}
+                                                className={` h-12  mt-5 w-full font-medium text-lg rounded-xl ${!isValid ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
+
+                                            >
+                                                Submit
+                                            </button>
                                     }
-                                    return true;
-                                },
-
-                            }}
-                            render={({ field }) => (
-                                <div className="relative">
-                                    <input
-                                        {...field}
-                                        maxLength={10}
-                                        type="tel"
-                                        autoFocus
-                                        inputMode="numeric"
-                                        disabled={formLoader ? true : false}
-                                        className={`p-3 w-full text-base border ${errors.phone ? "border-red-500" : "border-blue-500"
-                                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                        placeholder="Enter your phone number"
-                                        onChange={(e) => handlePhoneChange({ e, field })}
-                                    />
-
-                                    <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.phone?.message}</p>
-
                                 </div>
-                            )}
-                        />
-
-                        <label className="text-sm font-medium text-gray-700 -mb-1">
-                            Location <span className="text-red-500">*</span>
-                        </label>
-                        <Controller
-                            name="location"
-                            control={control}
-                            rules={{
-                                required: "Location is required",
-                                minLength: {
-                                    value: 3,
-                                    message: "Location must be at least 3 characters",
-                                },
-                            }}
-                            render={({ field }) => (
-                                <div className="relative">
-                                    <input
-                                        {...field}
-                                        type="text"
-                                        autoFocus
-                                        inputMode="text"
-                                        maxLength={44}
-                                        disabled={formLoader ? true : false}
-                                        className={`p-3 w-full text-base border ${errors.location ? "border-red-500" : "border-blue-500"
-                                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                        placeholder="Enter your location"
-                                        onChange={(e) => handleLocationChange({ e, field })}
-                                    />
-
-                                    <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.location?.message}</p>
-
-                                </div>
-                            )}
-                        />
-
-                        <label className="text-sm font-medium text-gray-700 -mb-1">
-                            About <span className="text-red-500">*</span>
-                        </label>
-                        <Controller
-                            name="about"
-                            control={control}
-                            rules={{
-                                required: "About section is required",
-                                minLength: {
-                                    value: 15,
-                                    message: "Must be at least 15 characters",
-                                },
-                            }}
-                            render={({ field }) => (
-                                <div className="relative">
-                                    <textarea
-                                        {...field}
-                                        type="text"
-                                        autoFocus
-                                        inputMode="text"
-                                        maxLength={100}
-                                        disabled={formLoader ? true : false}
-                                        className={`p-3 w-full text-base border ${errors.about ? "border-red-500" : "border-blue-500"
-                                            } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
-                                        placeholder="Tell us about yourself"
-                                        onChange={(e) => handleAboutChange({ e, field })}
-                                    />
-
-                                    <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.about?.message}</p>
-
-                                </div>
-                            )}
-                        />
-
-                        <div className="flex gap-2 h-20 items-center ">
-                            <label htmlFor="files" className="btn ml-2">Select Image(Optional)</label>
-                            <input type="file" disabled={formLoader ? true : false} id='files' style={{ 'display': 'none' }} name="image" onChange={handleImageChange} accept="image/*" className="p-3 w-60 text-lg border-2 border-white  text-gray-500" />
-                            {
-                                fileName ? fileName : <p></p>
-                            }
-                            {file == null ?
-                                <img src={file} className="invisible h-20 w-20 border-white" /> :
-                                <div className="flex ml-5 flex-end gap-4">
-
-                                    <img src={file} className="h-20 w-20 border-white" />
-
-                                    <p className="font-semibold" onClick={(e) => {
-                                        setFile(null);
-                                        setImage(null);
-                                        setFileName(" ")
-                                    }}>X</p>
-
-                                </div>
-
-                            }
+                            </div>
                         </div>
-
                     </div>
-
-
-                    <div className={updating ? ` ` : `grid grid-cols-2 mt-2 gap-5 items-center`}>
-                        <input type="reset" onClick={() => reset(defaultValues)} className={updating ? `hidden ` : `h-12 border-2 border-red-700 text-red-700 rounded-2xl font-medium hover:bg-red-700 hover:text-white text-lg`} />
-                        {
-                            formLoader ?
-                                <div className="flex justify-center h-10 items-center">
-                                    <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
-                                </div>
-                                :
-                                <button
-                                    disabled={!isValid}
-                                    className={` h-12  w-full font-medium text-lg rounded-xl ${!isValid ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
-
-                                >
-                                    Submit
-                                </button>
-                        }
-                    </div>
-
                 </form>
             </div>
 

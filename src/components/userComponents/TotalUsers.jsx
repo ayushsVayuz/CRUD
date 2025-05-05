@@ -7,7 +7,7 @@ const TotalUsers = () => {
 
     return (
         <div>
-            <p className="font-medium text-sky-800">Total Users: <span className="text-blue-700">{totalData}</span></p>
+            <p className="font-medium text-sky-600">Total Users: <span className="text-sky-600 ">{totalData}</span></p>
         </div>
     )
 }

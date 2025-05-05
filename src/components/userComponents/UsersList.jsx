@@ -4,14 +4,19 @@ import Pagination from "../Pagination";
 import ConfirmModal from "../ConfirmModel";
 import userStore from "../../store/Store";
 import TableShimmer from "../shimmer/TableShimmer";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faEdit, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function UsersList() {
   const [searchParams] = useSearchParams();
-  const { getAllUsersLoader, fetchAllUsersData, usersData, deleteUser, deleteUserLoader } = userStore();
+  const { getAllUsersLoader, fetchAllUsersData, usersData, deleteUser, updateStatus, statusLoader } = userStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loadingItemId, setLoadingItemId] = useState(null);
-  const [actionID, setActionID] = useState(false);
+  const [actionID, setActionID] = useState(null);
+  const [isChecked, setIsChecked] = useState(false);
+  const [toggleID, setToggleID] = useState(false);
+
 
   let searchQuery = searchParams.get("search");
   let pageNumber = Number(searchParams.get("page")) || 1;
@@ -23,8 +28,9 @@ function UsersList() {
    */
   console.log(usersData, "usersData12");
 
+  //usersData && usersData?.length === 0 && 
   useEffect(() => {
-    usersData && usersData?.length === 0 && fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+    fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
   }, [pageNumber, searchQuery, pageLimit]);
 
 
@@ -44,11 +50,7 @@ function UsersList() {
   const handleConfirmDelete = async () => {
 
     setLoadingItemId(selectedUserId)
-    await (deleteUser(selectedUserId));
-
-    // if (usersData.length < 6) {
-    //   await fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
-    // }
+    await (deleteUser(selectedUserId, searchParams));
     setLoadingItemId(null)
     selectedUserId(null)
   };
@@ -63,9 +65,15 @@ function UsersList() {
     }
   }, [loadingItemId]);
 
-  function handleAction () {
-    setAction(true)
+
+  const handleToggleChange = async (id, status) => {
+    let newStatus = !status;
+
+    const response = await updateStatus({ id, newStatus });
+    console.log("response", response);
+
   }
+
 
   return getAllUsersLoader ? (
     <TableShimmer />
@@ -73,21 +81,22 @@ function UsersList() {
     <>
 
       <div className="overflow-x-auto mx-auto max-w-6xl p-4">
-        <table className="w-full border border-sky-800 text-sm sm:text-md">
-          <thead>
-            <tr className="h-12 bg-sky-100">
-              <th className="border-2 border-blue-400 p-2 text-sky-800 border-r-2">S.No.</th>
-              <th className="border-2 border-blue-400 p-2 text-sky-800">Name</th>
-              <th className="border-2 border-blue-400 p-2 text-sky-800">Email</th>
-              <th className="border-2 border-blue-400 p-2 text-sky-800">Contact</th>
-              <th className="border-2 border-blue-400 p-2 text-sky-800">Action</th>
+        <table className="w-full  text-sm sm:text-md ">
+          <thead className="text-left">
+            <tr className="h-12 bg-sky-100 ">
+              <th className=" p-2 text-sky-800 text-center">S.No.</th>
+              <th className=" p-2 text-sky-800">Name</th>
+              <th className=" p-2 text-sky-800">Email</th>
+              <th className=" p-2 text-sky-800">Contact</th>
+              <th className="p-2 text-sky-800">Status</th>
+              <th className=" p-2 text-sky-800 text-center">Action</th>
             </tr>
           </thead>
           <tbody>
             {Array.isArray(usersData) ? (
               usersData.map((data, index) => (
-                <tr key={data._id} className="border-2 h-14 border-blue-400 text-center">
-                  <td className="p-2 border-r-2 border-blue-400">
+                <tr key={data?._id} className=" h-14  border-b-1 border-gray-300 text-center">
+                  <td className="p-2 ">
                     {pageNumber ? index + 1 + (pageNumber - 1) * pageLimit : index + 1}
                   </td>
                   <td className="flex items-center gap-2 p-2">
@@ -100,49 +109,72 @@ function UsersList() {
                     )}
                     <p className="text-start font-medium truncate w-36 sm:w-48">{data?.name}</p>
                   </td>
-                  <td className="p-2 border-2 text-left border-blue-400">{data?.email}</td>
-                  <td className="p-2 border-2 text-left border-blue-400">{data?.phone}</td>
-                  <td className="flex justify-center gap-3 p-2">
+                  <td className="p-2  text-left ">{data?.email}</td>
+                  <td className="p-2  text-left ">{data?.phone}</td>
+                  <td className="p-2  text-left ">
+                   {
+                    statusLoader ? // Complete it
+                    <div className="flex justify-center h-10 items-center">
+                      <div className=" w-4 h-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                    :
+                    <input type="checkbox" onChange={() => handleToggleChange(data?._id, data?.status)} checked={data?.status} />
+                   }
+                  </td>
+                  <td className="flex flex-row justify-center gap-3 p-2">
                     {
-                      actionID !== data?._id ?(
-                      
+                      actionID !== data?._id ? (
+
                         <p onClick={() => setActionID(data?._id)}>...</p>
-                      ):(
-                        <ul className="grid grid-rows-3">
-                          <li>
-                           
-                            
-                            <Link
-                              to={`/updateUser/${data?._id}`}
-                              className=" px-3 py-1 rounded-lg text-sm"
-                            >
-                              Update
-                            </Link></li>
-                          <li> {
-                            loadingItemId === data?._id ?(
-                              <div className="flex justify-center h-10 items-center">
-                                <div className="border-4 border-solid text-center border-blue-700 border-e-transparent rounded-full animate-spin w-10 h-10"></div>
-                              </div>
-                            ):(
-                              <button
-                                type="button"
+                      ) : (
+                        <div className="relative">
+                          <button
+                            className="absolute top-[-15px] right-[-30px] p-1 text-red-500 hover:text-red-700 text-lg"
+                            onClick={() => setActionID(null)}
+                          >
+                            <FontAwesomeIcon icon={faXmark} className="ml-5" />
+                          </button>
+
+
+                          <ul className="grid grid-cols-3 items-center">
+                            <li>
+
+
+                              <Link
+                                to={`/updateUser/${data?._id}`}
+                                className=" px-3 py-1  rounded-lg text-sm"
+                              >
+
+                                <FontAwesomeIcon icon={faEdit} className="text-sky-700" />
+                              </Link></li>
+                            <li>
+                              {
+                                loadingItemId === data?._id ? (
+                                  <div className="flex justify-center h-10 items-center">
+                                    <div className=" w-4 h-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                                  </div>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    className=" px-3 py-1 rounded-lg text-sm"
+                                    onClick={() => handleDeleteClick(data?._id)}
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} className="text-sky-700" />
+
+                                  </button>
+                                )
+                              }</li>
+                            <li>
+                              <Link
+                                to={`/userDetails/${data?._id}`}
                                 className=" px-3 py-1 rounded-lg text-sm"
-                                onClick={() => handleDeleteClick(data?._id)}
                               >
-                                Delete
-                                
-                              </button>
-                            )
-                          }</li>
-                          <li> 
-                            <button
-                                type="button"
-                                className= " px-3 py-1 rounded-lg text-sm"
-                              >
-                                User Details
-                              </button></li>
-                        </ul>
-                        )
+                                <FontAwesomeIcon icon={faUser} className="text-sky-700" />
+                              </Link></li>
+                          </ul>
+                        </div>
+                      )
+
                     }
                   </td>
                 </tr>
