@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { FaSearch } from "react-icons/fa";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 const SearchUsers = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
-
+  const navigate = useNavigate();
 
 
 
@@ -30,13 +30,15 @@ const SearchUsers = () => {
    */
   const handleSearchChange = (e) => {
     let trimmedValue = e.target.value.trimStart().replace(/\s+/g, ' ');
+    console.log("trimmedValue", trimmedValue);
+    
     setSearchQuery(trimmedValue)
 
-    if (trimmedValue === "") {
+    if (trimmedValue === "" || trimmedValue === null ) {
+      navigate(-1);
       setSearchParams({});
-      navigate(-1); 
     }
-  
+
   };
 
   return (
@@ -49,8 +51,8 @@ const SearchUsers = () => {
         placeholder="Type to search"
         value={searchQuery}
       />
-      
-      <button className="ml-4" type="submit"><FontAwesomeIcon icon={faSearch } /></button>
+
+      <button className="ml-4" type="submit"><FontAwesomeIcon icon={faSearch} /></button>
     </form>
   );
 };

@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
-import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange, handleToggleChange } from "../../utils/Utils";
+import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
 import { FaArrowLeft } from "react-icons/fa";
 import userStore from "../../store/Store";
 import { toast } from "react-toastify";
@@ -27,11 +27,12 @@ const UserForm = ({ updating }) => {
         setValue,
         getValues,
         watch,
+        trigger,
         formState: { errors },
         reset,
     } = useForm({
         mode: "onChange",
-        defaultValues: { name: "", email: "", phone: "", location: "", about: "", status:"" }
+        defaultValues: { name: "", email: "", phone: "", location: "", about: "", status: false }
     });
 
     const [image, setImage] = useState()
@@ -44,7 +45,7 @@ const UserForm = ({ updating }) => {
         phone: "",
         location: "",
         about: "",
-        status:"",
+        status: "",
     };
 
     /**
@@ -77,8 +78,8 @@ const UserForm = ({ updating }) => {
         }
     }
 
-    
-  
+
+
 
 
     useEffect(() => {
@@ -108,32 +109,33 @@ const UserForm = ({ updating }) => {
          * Updates form values with data from the selected user.
          */
         useEffect(() => {
+            trigger();
 
             setValue("name", selectedUser?.name)
             setValue("email", selectedUser?.email)
             setValue("phone", selectedUser?.phone)
             setValue("location", selectedUser?.location)
             setValue("about", selectedUser?.about)
-            setValue("status", selectedUser?.status? true:false)
-            
-        }, [selectedUser])
+            setValue("status", selectedUser?.status ? true : false)
+
+        }, [selectedUser, trigger])
     }
-    console.log("selecteduser",selectedUser?.status);
+    console.log("selecteduser", selectedUser?.status);
 
     const formData = watch();
     const errorLength = Object.keys(errors).length === 0
     const trimming = Object.values(formData).every(value => {
         if (typeof value === 'string') {
             return value.trim() !== "";
-          } else if (value === null || value === undefined) {
+        } else if (value === null || value === undefined) {
             return false;
-          } else {
-              return true;
-          }
+        } else {
+            return true;
+        }
     });
-    
+
     const isValid = errorLength && trimming;
-        
+
     /**
      * @param {Object} data - Contains user details to be updated.
      * @return {Promise<void>} Sends user data to API and redirects upon success.
@@ -146,8 +148,9 @@ const UserForm = ({ updating }) => {
         formData.append("location", data?.location);
         formData.append("about", data?.about);
         formData.append("image", image);
-        formData.append("status",data?.status);
-        
+        formData.append("status", data?.status ?? false);
+
+
 
         try {
             console.log("updating", updating)
@@ -212,11 +215,16 @@ const UserForm = ({ updating }) => {
                                     name="name"
                                     control={control}
                                     rules={{
+                                        pattern: {
+                                            value: /^[a-zA-Z]*$/,
+                                            message: "Name must be in letters",
+                                        },
                                         required: "Full Name is required",
                                         minLength: {
                                             value: 2,
                                             message: "Full Name must be at least 2 characters",
-                                        },
+                                        }
+                                        
                                     }}
                                     render={({ field }) => (
                                         <div className="relative">
@@ -288,8 +296,9 @@ const UserForm = ({ updating }) => {
                                         required: "Phone Number is required",
                                         pattern: {
                                             value: /^[0-9]{10}$/,
-                                            message: "Phone Number must be exactly 10 digits",
+                                            message: "Phone Number must be in digits of length 10.",
                                         },
+                                       
                                         validate: (value) => {
                                             if (/^(.)\1{9}$/.test(value)) {
                                                 return "Phone number cannot have all identical digits.";
@@ -421,19 +430,23 @@ const UserForm = ({ updating }) => {
 
 
                                 <label className="text-sm font-medium text-gray-700 -mb-1">
-                                    Active 
+                                    Active
                                 </label>
                                 <Controller
                                     name="status"
                                     control={control}
+                                    defaultValue={false}
                                     render={({ field }) => (
                                         <div className="relative">
 
                                             <input
                                                 {...field}
                                                 type="checkbox"
-                                                onChange={(e) => handleToggleChange({ e, field })}
-                                                checked = {field.value}
+                                                onChange={(e) => {
+                                                    const newStatus = e.target.checked;
+                                                    field.onChange(newStatus); 
+                                                    updateStatus({ id: selectedUser?._id, status : newStatus });                                                }}
+                                                checked={field.value}
                                             />
                                         </div>
                                     )}

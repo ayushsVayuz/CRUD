@@ -8,7 +8,7 @@ const Pagination = ({ currentPage }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const { totalData } = userStore();
 
-  let itemsPerPage = 6;
+  let itemsPerPage = 10;
   const pageCount = Math.ceil((totalData || 1) / itemsPerPage);
 
 

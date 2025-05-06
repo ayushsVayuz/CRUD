@@ -9,18 +9,17 @@ import { faTrash, faEdit, faUser, faXmark } from "@fortawesome/free-solid-svg-ic
 
 function UsersList() {
   const [searchParams] = useSearchParams();
-  const { getAllUsersLoader, fetchAllUsersData, usersData, deleteUser, updateStatus, statusLoader } = userStore();
+  const { getAllUsersLoader, fetchAllUsersData, usersData,totalData,  deleteUser, updateStatus, statusLoader } = userStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loadingItemId, setLoadingItemId] = useState(null);
   const [actionID, setActionID] = useState(null);
-  const [isChecked, setIsChecked] = useState(false);
-  const [toggleID, setToggleID] = useState(false);
+  const [statusLoading, setStatusLoading] = useState({});
 
 
   let searchQuery = searchParams.get("search");
   let pageNumber = Number(searchParams.get("page")) || 1;
-  const pageLimit = 6;
+  const pageLimit = 10;
 
 
   /**
@@ -28,10 +27,15 @@ function UsersList() {
    */
   console.log(usersData, "usersData12");
 
-  //usersData && usersData?.length === 0 && 
   useEffect(() => {
-    fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
-  }, [pageNumber, searchQuery, pageLimit]);
+
+    if(searchQuery) {
+      fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+
+    }else {
+      usersData && usersData?.length === 0 && fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+    }
+    }, [pageNumber, searchQuery, pageLimit]);
 
 
 
@@ -67,13 +71,18 @@ function UsersList() {
 
 
   const handleToggleChange = async (id, status) => {
+    setStatusLoading(prev => ({ ...prev, [id]: true })); 
+
+    try {
     let newStatus = !status;
 
     const response = await updateStatus({ id, newStatus });
     console.log("response", response);
-
+    }finally {
+      setStatusLoading(prev => ({...prev , [id]:false}))
+    }
   }
-
+  
 
   return getAllUsersLoader ? (
     <TableShimmer />
@@ -88,7 +97,7 @@ function UsersList() {
               <th className=" p-2 text-sky-800">Name</th>
               <th className=" p-2 text-sky-800">Email</th>
               <th className=" p-2 text-sky-800">Contact</th>
-              <th className="p-2 text-sky-800">Status</th>
+              <th className="p-2 text-center text-sky-800">Status</th>
               <th className=" p-2 text-sky-800 text-center">Action</th>
             </tr>
           </thead>
@@ -111,16 +120,18 @@ function UsersList() {
                   </td>
                   <td className="p-2  text-left ">{data?.email}</td>
                   <td className="p-2  text-left ">{data?.phone}</td>
-                  <td className="p-2  text-left ">
+                  <td className="p-2  text-center relative">
                    {
-                    statusLoader ? // Complete it
-                    <div className="flex justify-center h-10 items-center">
-                      <div className=" w-4 h-4 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                    statusLoading[data?._id]  ? (
+                    <div className="absolute inset-0 flex justify-center items-center">
+                      <div className=" w-5 h-5 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                     </div>
-                    :
-                    <input type="checkbox" onChange={() => handleToggleChange(data?._id, data?.status)} checked={data?.status} />
-                   }
+                    ):(
+                    <input type="checkbox"  className=" w-5 h-5" onChange={() => handleToggleChange(data?._id, data?.status)} checked={data?.status} />
+                   )}
                   </td>
+  
+
                   <td className="flex flex-row justify-center gap-3 p-2">
                     {
                       actionID !== data?._id ? (
@@ -190,7 +201,7 @@ function UsersList() {
         </table>
       </div>
 
-      <Pagination currentPage={pageNumber} />
+     {fetchAllUsersData && totalData > 10 &&  <Pagination currentPage={pageNumber} />}
       <ConfirmModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onConfirm={handleConfirmDelete} message="Are you sure you want to delete this user?" />
     </>
   );

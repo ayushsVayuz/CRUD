@@ -3,8 +3,12 @@
  * @param {Object} field - React Hook Form field object.
  */
 export const handleNameChange = ({e,field}) => {
+  console.log("handleNameChange",e.target);
+  
     e.target.value = e.target.value.trimStart().replace(/\s+/g, ' ');
-    if (!/^[a-zA-Z ]*$/.test(e.target.value)) return;
+
+    if (!/^[a-zA-Z ]*$/.test(e.target.value)) return ;
+
     field.onChange(e);
   }
 
@@ -37,9 +41,7 @@ export const handlePhoneChange = ({ e, field }) => {
  */
 export const handleLocationChange = ({ e, field }) => {
     e.target.value = e.target.value.trimStart().replace(/\s+/g, ' ');
-    
-    if (!/^[a-zA-Z ]*$/.test(e.target.value)) return;
-  
+      
     field.onChange(e);
 };
 
@@ -65,7 +67,3 @@ export const handlePasswordChange = ({e,field}) => {
   field.onChange(e);
 }
 
-export const handleToggleChange = ({e, field}) => {
-  if(e.target.checked)
-  field.onChange(e) 
-}

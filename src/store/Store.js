@@ -2,7 +2,6 @@ import { create } from "zustand";
 import axios from "axios";
 import { toast } from "react-toastify";
 
-
 /**
  * Creates a Zustand store to handle user actions and state updates.
  */
@@ -14,15 +13,15 @@ const userStore = create((set, get) => ({
   payload: null,
   token: null,
   usersData: [],
-  selectedUser: null,     
+  selectedUser: null,
   userDataObject: null,
   updatedUser: null,
   totalData: 0,
   formLoader: false,
   user: null,
-  statusLoader:null,
+  statusLoader: null,
   error: null,
-  userStatus :null,
+  userStatus: null,
   abortController: null,
 
   /**
@@ -78,7 +77,7 @@ const userStore = create((set, get) => ({
 
       set({
         signupLoader: false,
-         payload: response.data.data,
+        payload: response.data.data,
       });
       return response;
     } catch (error) {
@@ -94,25 +93,40 @@ const userStore = create((set, get) => ({
    * @param {Object} payload - Contains search query and pagination details.
    * @return {Promise<Object>} API response.
    */
+
   async fetchAllUsersData(payload) {
     const controller = new AbortController();
-    set({
-      getAllUsersLoader: true,
-      error: null,
+    const { signal } = controller;
+
+    set({ getAllUsersLoader: true });
+
+    const abortRequest = (time) => {
+      return new Promise((_, reject) => {
+        setTimeout(() => {
+          controller.abort();
+
+          const error = new Error("Request took too long to respond. Please try again later." );
+          error.name = "AbortError",
+          reject(error);
+          console.log(error.name,"error.name1");
+          
+        }, time);
+      });
+    };
+
+    const fetchPromise = axios.get(import.meta.env.VITE_API + "/users", {
+      params: {
+        page: payload?.pageNumber,
+        limit: payload?.pageLimit,
+        search: payload?.searchQuery,
+      },
+      signal: signal,
     });
 
+    const timeoutPromise = abortRequest(5000 );
+
     try {
-      const response = await axios.get(
-        import.meta.env.VITE_API + `/users`,
-        {
-          params: {
-            page: payload?.pageNumber,
-            limit: payload?.pageLimit,
-            search: payload?.searchQuery,
-          },
-        },
-        { signal: controller.signal }
-      );
+      const response = await Promise.race([fetchPromise, timeoutPromise]);
 
       set({
         usersData: response.data.data,
@@ -120,23 +134,27 @@ const userStore = create((set, get) => ({
         getAllUsersLoader: false,
       });
 
-      setTimeout( () => {
-        controller.abort();
-      }, 20000)
-
       return response;
-
     } catch (error) {
+      console.log(error, "error");
+      console.log("outside if");
+      console.log(error.name,"error.name2");
+      
       if (error.name === "AbortError") {
-        toast.error("Fetch Aborted due to slow Api response");
+        console.log("inside if");
+
+        console.log("Request was aborted:", error);
+        toast.error("Fetch aborted due to slow API response");
+        set({ getAllUsersLoader: false });
+        return;
       } else {
-        set({
-          getAllUsersLoader: false,
-        });
+        console.log("Error fetching users:", error);
         toast.error("Fetching users data failed!");
       }
-    }
+      set({ getAllUsersLoader: false });
 
+      
+    }
   },
 
   /**
@@ -172,10 +190,9 @@ const userStore = create((set, get) => ({
    * @return {Promise<Object>} API response.
    */
   async getSpecificUserData(userId) {
-
-    set({ 
+    set({
       getSpecificUserLoader: true,
-     });
+    });
     try {
       const response = await axios
         .get(import.meta.env.VITE_API + `/users/${userId}`)
@@ -200,8 +217,6 @@ const userStore = create((set, get) => ({
    * @return {Promise<Object>} API response.
    */
   async postUserData(formData) {
-
-    
     set({ formLoader: true });
 
     try {
@@ -274,13 +289,13 @@ const userStore = create((set, get) => ({
   },
 
   async updateStatus(payload) {
-    set({statusLoader:true})
+    set({ statusLoader: true });
 
     console.log("from status route1");
     try {
       const response = await axios.patch(
         import.meta.env.VITE_API + `/users/${payload.id}/status`,
-        {status:payload.newStatus},
+        { status: payload.newStatus },
         {
           headers: {
             "Content-Type": "application/json",
@@ -294,28 +309,25 @@ const userStore = create((set, get) => ({
       const updatedUsersData = currentUsers.map((user) => {
         if (user._id === payload.id) {
           return {
-            ...user, 
-            status: payload.newStatus
+            ...user,
+            status: payload.newStatus,
           };
         }
 
-        
         return user;
       });
-      
+
       set({
         usersData: updatedUsersData,
-        statusLoader:false
+        statusLoader: false,
       });
       return response;
     } catch (error) {
       console.log("Error in updateUserData:", error);
-      set({statusLoader:false})
+      set({ statusLoader: false });
       toast.error("Status change failed!");
     }
   },
-
 }));
-
 
 export default userStore;

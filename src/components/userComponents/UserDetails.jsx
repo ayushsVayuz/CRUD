@@ -26,17 +26,18 @@ const UserDetails = () => {
             {selectedUser?.image && (
               <div className="flex justify-center ">
                 {selectedUser?.image?.trim() && selectedUser?.image?.trim() !== "null" && selectedUser?.image?.trim() !== "undefined" ? (
-                  <img src={selectedUser.image} alt="User Profile" className="absolute top-40 transform translate-y-1/2 h-24 w-24 rounded-full shadow-md object-cover border-4 border-white" />
+                  <img src={selectedUser.image} alt="User Profile" className="absolute top-40 transform translate-y-1/2 bg-gray-500 h-24 w-24 rounded-full shadow-md object-cover border-4 border-white" />
                 ) : (
                   <h3 className="absolute top-40 transform translate-y-1/2 text-center p-2 w-24 h-24 bg-gray-300 rounded-full flex items-center justify-center text-xl font-semibold border-4 border-white">
                     {selectedUser?.name?.trim()?.slice(0, 1).toUpperCase()}
                   </h3>
                 )}
 
+
               </div>
+              
 
             )}
-
             <div className="mt-17 flex gap-10">
 
               <div className="flex flex-col gap-6 opacity-40">
@@ -45,6 +46,7 @@ const UserDetails = () => {
                 <p>Phone Number:</p>
                 <p>Location:</p>
                 <p>About:</p>
+                <p>Status</p>
               </div>
 
               <div className="flex flex-col gap-6 ">
@@ -63,6 +65,11 @@ const UserDetails = () => {
                 <p className="text-gray-700">
                   {selectedUser?.about}
                 </p>
+                <p>
+                <p className="text-gray-700">
+                  {selectedUser?.status ? "Active": "Inactive"}</p>
+                </p>
+                
               </div>
 
             </div>
