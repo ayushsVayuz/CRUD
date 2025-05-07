@@ -27,10 +27,14 @@ const Title = () => {
         }
 
         if (path.includes("/home")) {
-            document.querySelector('meta[name="description"]')?.setAttribute("content", "Welcome to CRUD - Manage your data efficiently.");
+            document.querySelector('meta[property="og:title"]')?.setAttribute("content", "CRUD Application");
+
+            document.querySelector('meta[property="og:description"]')?.setAttribute("content", "User Management");
 
         } else if (path.includes("/about")) {
-            document.querySelector('meta[name="description"]')?.setAttribute("content", "Learn about the CRUD app creator");
+            document.querySelector('meta[property="og:title"]')?.setAttribute("content", "About the Developer | CRUD Application");
+
+            document.querySelector('meta[property="og:description"]')?.setAttribute("content", "Simple Introduction");
 
         }
 
