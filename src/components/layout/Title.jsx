@@ -2,38 +2,41 @@ import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
 
 const Title = () => {
-  
-  let location =  useLocation();
-  console.log("location",location.pathname);
-  let path = location.pathname
+
+    let location = useLocation();
+    console.log("location", location.pathname);
+    let path = location.pathname
 
     // It sets title for each components or page according to the pathname 
     useEffect(() => {
 
-        if(path.includes('/login')){
+        if (path.includes('/login')) {
             document.title = "Login | CRUD";
-        }else if(path.includes('/signup')) {
+        } else if (path.includes('/signup')) {
             document.title = "Signup | CRUD";
-        }else if(path.includes('/home')) {
-            document.title= "Home | CRUD";
-        }else if (path.includes('/about')) {
+        } else if (path.includes('/home')) {
+            document.title = "Home | CRUD";
+        } else if (path.includes('/about')) {
             document.title = "About | CRUD"
-        }else if(path.includes('/createUser')) {
+        } else if (path.includes('/createUser')) {
             document.title = "Create User | CRUD"
-        }else if(path.includes('/updateUser')) {
+        } else if (path.includes('/updateUser')) {
             document.title = "Update User | CRUD"
-        }
-        else if(path.includes('/userDetails')) {
+        } else if (path.includes('/userDetails')) {
             document.title = "User Details | CRUD"
-        }    
-      }, [location.pathname]);
-  
-    return (
-    <div>
-      
-      
-    </div>
-  )
+        }
+
+        if (path.includes("/home")) {
+            document.querySelector('meta[name="description"]')?.setAttribute("content", "Welcome to CRUD - Manage your data efficiently.");
+
+        } else if (path.includes("/about")) {
+            document.querySelector('meta[name="description"]')?.setAttribute("content", "Learn about the CRUD app creator");
+
+        }
+
+    }, [location.pathname]);
+
+    return null; 
 }
 
 export default Title
