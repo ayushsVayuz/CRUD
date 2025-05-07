@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
+import { Helmet } from 'react-helmet-async';
 
 const Title = () => {
 
@@ -26,6 +27,12 @@ const Title = () => {
             document.title = "User Details | CRUD"
         }
 
+        <Helmet>
+            <meta property="og:title" content="CRUD Application" />
+            <meta property="og:description" content="User Management" />
+        </Helmet>
+
+
         // if (path.includes("/home")) {
         //     document.querySelector('meta[name="title"]')?.setAttribute("content", "CRUD Application.");
         //     document.querySelector('meta[name="description"]')?.setAttribute("content", "User Management.");
@@ -38,7 +45,7 @@ const Title = () => {
 
     }, [location.pathname]);
 
-    return null; 
+    return null;
 }
 
 export default Title
