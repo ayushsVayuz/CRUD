@@ -215,11 +215,11 @@ const UserForm = ({ updating }) => {
                                     name="name"
                                     control={control}
                                     rules={{
+                                        required: "Full Name is required",
                                         pattern: {
                                             value: /^[a-zA-Z]*$/,
                                             message: "Name must be in letters",
                                         },
-                                        required: "Full Name is required",
                                         minLength: {
                                             value: 2,
                                             message: "Full Name must be at least 2 characters",
