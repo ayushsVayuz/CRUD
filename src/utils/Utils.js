@@ -7,8 +7,7 @@ export const handleNameChange = ({e,field}) => {
   
     e.target.value = e.target.value.trimStart().replace(/\s+/g, ' ');
 
-    if (!/^[a-zA-Z ]*$/.test(e.target.value)) return ;
-
+    if (!/^[a-zA-Z]+(?: [a-zA-Z]+)*$/.test(newValue)) return
     field.onChange(e);
   }
 

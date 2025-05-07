@@ -109,7 +109,7 @@ const UserForm = ({ updating }) => {
          * Updates form values with data from the selected user.
          */
         useEffect(() => {
-            trigger();
+           
 
             setValue("name", selectedUser?.name)
             setValue("email", selectedUser?.email)
@@ -117,7 +117,7 @@ const UserForm = ({ updating }) => {
             setValue("location", selectedUser?.location)
             setValue("about", selectedUser?.about)
             setValue("status", selectedUser?.status ? true : false)
-
+            trigger();
         }, [selectedUser, trigger])
     }
     console.log("selecteduser", selectedUser?.status);
@@ -217,7 +217,7 @@ const UserForm = ({ updating }) => {
                                     rules={{
                                         required: "Full Name is required",
                                         pattern: {
-                                            value: /^[a-zA-Z]*$/,
+                                            value: /^[a-zA-Z\s]+$/,
                                             message: "Name must be in letters",
                                         },
                                         minLength: {
