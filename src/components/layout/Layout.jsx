@@ -1,6 +1,6 @@
 import React from 'react'
 import Title from './Title'
-import { Navigate, Outlet } from 'react-router-dom'
+import { Outlet } from 'react-router-dom'
 
 const Layout = () => {
   return (

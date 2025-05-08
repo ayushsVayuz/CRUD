@@ -105,7 +105,7 @@ function Login() {
                                 required: "Password is required",
                                 pattern: {
                                     value: /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[^A-Za-z0-9]).{8,}$/,
-                                    message: "Password must contain at least eight characters, at least one number and both lower and uppercase letters and special characters",
+                                    message: "Password must be at least 8 characters long and include a number, an uppercase letter, a lowercase letter, and a special character.",
                                 },
 
 

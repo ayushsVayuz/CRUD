@@ -19,7 +19,6 @@ const userStore = create((set, get) => ({
   totalData: 0,
   formLoader: false,
   user: null,
-  statusLoader: null,
   error: null,
   userStatus: null,
   abortController: null,
@@ -105,11 +104,12 @@ const userStore = create((set, get) => ({
         setTimeout(() => {
           controller.abort();
 
-          const error = new Error("Request took too long to respond. Please try again later." );
-          error.name = "AbortError",
+          const error = new Error(
+            "Request took too long to respond. Please try again later."
+          );
+          error.name = "AbortError";
           reject(error);
-          console.log(error.name,"error.name1");
-          
+          console.log(error.name, "error.name1");
         }, time);
       });
     };
@@ -123,7 +123,7 @@ const userStore = create((set, get) => ({
       signal: signal,
     });
 
-    const timeoutPromise = abortRequest(5000 );
+    const timeoutPromise = abortRequest(5000);
 
     try {
       const response = await Promise.race([fetchPromise, timeoutPromise]);
@@ -136,14 +136,7 @@ const userStore = create((set, get) => ({
 
       return response;
     } catch (error) {
-      console.log(error, "error");
-      console.log("outside if");
-      console.log(error.name,"error.name2");
-      
       if (error.name === "AbortError") {
-        console.log("inside if");
-
-        console.log("Request was aborted:", error);
         toast.error("Fetch aborted due to slow API response");
         set({ getAllUsersLoader: false });
         return;
@@ -152,8 +145,6 @@ const userStore = create((set, get) => ({
         toast.error("Fetching users data failed!");
       }
       set({ getAllUsersLoader: false });
-
-      
     }
   },
 
@@ -175,7 +166,7 @@ const userStore = create((set, get) => ({
 
       await get().fetchAllUsersData({
         pageNumber: searchParams.get("page"),
-        pageLimit: 6,
+        pageLimit: 10,
       });
 
       return response;
@@ -267,9 +258,6 @@ const userStore = create((set, get) => ({
       const updatedUser = response?.data?.data;
       const currentUsers = get().usersData;
 
-      console.log("Updated user:", updatedUser);
-      console.log("Before update usersData:", currentUsers);
-
       const updatedUsersData = currentUsers.map((user) =>
         user._id === payload.id ? updatedUser : user
       );
@@ -288,10 +276,16 @@ const userStore = create((set, get) => ({
     }
   },
 
-  async updateStatus(payload) {
-    set({ statusLoader: true });
 
-    console.log("from status route1");
+  /**
+   * Updates a user's status in the API and local state.
+   *
+   * @param {Object} payload - Contains user ID and new status.
+   * @returns {Promise<Object>} API response.
+   */
+  async updateStatus(payload) {
+    
+
     try {
       const response = await axios.patch(
         import.meta.env.VITE_API + `/users/${payload.id}/status`,
@@ -302,7 +296,6 @@ const userStore = create((set, get) => ({
           },
         }
       );
-      console.log("response1", response);
 
       const currentUsers = get().usersData;
 
@@ -319,12 +312,12 @@ const userStore = create((set, get) => ({
 
       set({
         usersData: updatedUsersData,
-        statusLoader: false,
+      
       });
       return response;
     } catch (error) {
       console.log("Error in updateUserData:", error);
-      set({ statusLoader: false });
+   
       toast.error("Status change failed!");
     }
   },

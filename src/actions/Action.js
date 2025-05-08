@@ -31,7 +31,6 @@ export const registerUser = createAsyncThunk("registerUser" ,
             {
                 headers: { "Content-Type": "application/json" }
             });
-            console.log("signup", response.data)
             return response.data
     
                

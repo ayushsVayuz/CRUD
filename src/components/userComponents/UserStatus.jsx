@@ -1,8 +1,15 @@
 import React, { useState } from "react";
 
 const UserStatus = ({ id, status, updateStatus }) => {
+
   const [loading, setLoading] = useState(false);
 
+  /**
+   * Handles the status toggle change.
+   * Updates the user's status and shows a loading spinner.
+   * 
+   * @param {Event} event - The change event from the checkbox.
+   */
   const handleChange = async (event) => {
     const newStatus = event.target.checked;
     setLoading(true);

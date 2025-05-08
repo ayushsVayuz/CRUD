@@ -19,7 +19,7 @@ const HomePage = () => {
 
 
    
-            <div className="flex flex-col sm:flex-row gap-15 items-center justify-center">
+            <div className="flex flex-col sm:flex-row gap-6 items-center justify-center">
               <Link  
                 to="/createUser"  
                 className="bg-sky-600 hover:bg-sky-800 px-4 py-2 font-medium text-white text-center rounded-3xl w-28 sm:w-32 md:w-32">

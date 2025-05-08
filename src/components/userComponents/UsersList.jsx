@@ -9,7 +9,7 @@ import { faTrash, faEdit, faUser, faXmark } from "@fortawesome/free-solid-svg-ic
 
 function UsersList() {
   const [searchParams] = useSearchParams();
-  const { getAllUsersLoader, fetchAllUsersData, usersData,totalData,  deleteUser, updateStatus, statusLoader } = userStore();
+  const { getAllUsersLoader, fetchAllUsersData, usersData, totalData, deleteUser, updateStatus } = userStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loadingItemId, setLoadingItemId] = useState(null);
@@ -25,17 +25,15 @@ function UsersList() {
   /**
    * Fetches user data based on pagination and search filters.
    */
-  console.log(usersData, "usersData12");
-
   useEffect(() => {
 
-    if(searchQuery) {
+    if (searchQuery) {
       fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
 
-    }else {
+    } else {
       usersData && usersData?.length === 0 && fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
     }
-    }, [pageNumber, searchQuery, pageLimit]);
+  }, [pageNumber, searchQuery, pageLimit]);
 
 
 
@@ -70,19 +68,24 @@ function UsersList() {
   }, [loadingItemId]);
 
 
+  /**
+   * Toggles the user's active status.
+   * @param {string} id - The user ID.
+   * @param {boolean} status - The current status of the user.
+   */
   const handleToggleChange = async (id, status) => {
-    setStatusLoading(prev => ({ ...prev, [id]: true })); 
+    setStatusLoading(prev => ({ ...prev, [id]: true }));
 
     try {
-    let newStatus = !status;
+      let newStatus = !status;
 
-    const response = await updateStatus({ id, newStatus });
-    console.log("response", response);
-    }finally {
-      setStatusLoading(prev => ({...prev , [id]:false}))
+      const response = await updateStatus({ id, newStatus });
+      console.log("response", response);
+    } finally {
+      setStatusLoading(prev => ({ ...prev, [id]: false }))
     }
   }
-  
+
 
   return getAllUsersLoader ? (
     <TableShimmer />
@@ -121,16 +124,16 @@ function UsersList() {
                   <td className="p-2  text-left ">{data?.email}</td>
                   <td className="p-2  text-left ">{data?.phone}</td>
                   <td className="p-2  text-center relative">
-                   {
-                    statusLoading[data?._id]  ? (
-                    <div className="absolute inset-0 flex justify-center items-center">
-                      <div className=" w-5 h-5 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-                    </div>
-                    ):(
-                    <input type="checkbox"  className=" w-5 h-5" onChange={() => handleToggleChange(data?._id, data?.status)} checked={data?.status} />
-                   )}
+                    {
+                      statusLoading[data?._id] ? (
+                        <div className="absolute inset-0 flex justify-center items-center">
+                          <div className=" w-5 h-5 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                        </div>
+                      ) : (
+                        <input type="checkbox" className=" w-5 h-5" onChange={() => handleToggleChange(data?._id, data?.status)} checked={data?.status} />
+                      )}
                   </td>
-  
+
 
                   <td className="flex flex-row justify-center gap-3 p-2">
                     {
@@ -201,7 +204,7 @@ function UsersList() {
         </table>
       </div>
 
-     {fetchAllUsersData && totalData > 10 &&  <Pagination currentPage={pageNumber} />}
+      {fetchAllUsersData && totalData > 10 && <Pagination currentPage={pageNumber} />}
       <ConfirmModal isOpen={isModalOpen} onClose={() => setModalOpen(false)} onConfirm={handleConfirmDelete} message="Are you sure you want to delete this user?" />
     </>
   );

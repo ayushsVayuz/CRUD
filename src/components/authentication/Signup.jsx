@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Controller, useForm } from "react-hook-form";
 import { handleNameChange, handleEmailChange, handlePhoneChange, handlePasswordChange } from "../../utils/Utils";
-import { toast } from "react-toastify";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import userStore from "../../store/Store";
 

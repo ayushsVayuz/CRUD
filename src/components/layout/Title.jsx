@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
-import { Helmet } from 'react-helmet-async';
 
 const Title = () => {
 
@@ -26,22 +25,6 @@ const Title = () => {
         } else if (path.includes('/userDetails')) {
             document.title = "User Details | CRUD"
         }
-
-        <Helmet>
-            <meta property="og:title" content="CRUD Application" />
-            <meta property="og:description" content="User Management" />
-        </Helmet>
-
-
-        // if (path.includes("/home")) {
-        //     document.querySelector('meta[name="title"]')?.setAttribute("content", "CRUD Application.");
-        //     document.querySelector('meta[name="description"]')?.setAttribute("content", "User Management.");
-
-        // } else if (path.includes("/about")) {
-        //     document.querySelector('meta[name="title"]')?.setAttribute("content", "About the Developer | CRUD Application.");
-        //     document.querySelector('meta[name="description"]')?.setAttribute("content", "Simple Introduction");
-
-        // }
 
     }, [location.pathname]);
 

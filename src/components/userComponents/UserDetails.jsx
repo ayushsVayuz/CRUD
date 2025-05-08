@@ -7,8 +7,12 @@ const UserDetails = () => {
   const navigate = useNavigate();
   const { selectedUser, getSpecificUserData, getSpecificUserLoader } = userStore();
 
+  /**
+   * Fetches user details when the user ID changes.
+   * @param {string} id - The user ID from the URL.
+   */
   useEffect(() => {
-    getSpecificUserData(id); 
+    getSpecificUserData(id);
   }, [id]);
 
   return (
@@ -35,7 +39,7 @@ const UserDetails = () => {
 
 
               </div>
-              
+
 
             )}
             <div className="mt-17 flex gap-10">
@@ -53,7 +57,7 @@ const UserDetails = () => {
                 <p className="text-gray-700">
                   {selectedUser?.name}
                 </p>
-                <p  className="text-gray-700">
+                <p className="text-gray-700">
                   {selectedUser?.email}
                 </p>
                 <p className="text-gray-700">
@@ -66,10 +70,10 @@ const UserDetails = () => {
                   {selectedUser?.about}
                 </p>
                 <p>
-                <p className="text-gray-700">
-                  {selectedUser?.status ? "Active": "Inactive"}</p>
+                  <p className="text-gray-700">
+                    {selectedUser?.status ? "Active" : "Inactive"}</p>
                 </p>
-                
+
               </div>
 
             </div>

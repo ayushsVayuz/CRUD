@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 
 function AboutPage() {
 
@@ -39,16 +39,16 @@ function AboutPage() {
 
             <div className="flex justify-center gap-6">
                 <a href="https://www.instagram.com/sharmaayushay/" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="instagram.png" alt="Instagram" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="instagram.png" alt="Instagram-Profile" />
                 </a>
                 <a href="https://twitter.com/sharmaayushay" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="twitter.png" alt="Twitter" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="twitter.png" alt="Twitter-Profile" />
                 </a>
                 <a href="https://www.facebook.com/profile.php?id=100009380654938&sk=about" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="facebook.png" alt="Facebook" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="facebook.png" alt="Facebook-Profile" />
                 </a>
                 <a href="https://www.linkedin.com/in/ayush-sharma-39a042272" target="_blank" rel="noreferrer">
-                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="linkedin.png" alt="LinkedIn" />
+                    <img className="h-8 w-8 sm:h-10 sm:w-10" src="linkedin.png" alt="LinkedIn-Profile" />
                 </a>
             </div>
 

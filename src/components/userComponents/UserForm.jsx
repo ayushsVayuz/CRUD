@@ -81,7 +81,10 @@ const UserForm = ({ updating }) => {
 
 
 
-
+    /**
+     * Warns the user before leaving the page.
+     * Runs when `formLoader` changes.
+     */
     useEffect(() => {
         window.addEventListener("beforeunload", alertUser);
         return () => {
@@ -89,6 +92,8 @@ const UserForm = ({ updating }) => {
         };
     }, [formLoader]);
 
+
+ 
     const alertUser = (e) => {
         e.preventDefault();
         e.returnValue = "";
@@ -109,7 +114,7 @@ const UserForm = ({ updating }) => {
          * Updates form values with data from the selected user.
          */
         useEffect(() => {
-           
+
 
             setValue("name", selectedUser?.name)
             setValue("email", selectedUser?.email)
@@ -218,13 +223,13 @@ const UserForm = ({ updating }) => {
                                         required: "Full Name is required",
                                         pattern: {
                                             value: /^[a-zA-Z\s]+$/,
-                                            message: "Name must be in letters",
+                                            message: "Name must contain only letters",
                                         },
                                         minLength: {
                                             value: 2,
                                             message: "Full Name must be at least 2 characters",
                                         }
-                                        
+
                                     }}
                                     render={({ field }) => (
                                         <div className="relative">
@@ -296,9 +301,9 @@ const UserForm = ({ updating }) => {
                                         required: "Phone Number is required",
                                         pattern: {
                                             value: /^[0-9]{10}$/,
-                                            message: "Phone Number must be in digits of length 10.",
+                                            message: "Phone Number must be exactly 10 digits.",
                                         },
-                                       
+
                                         validate: (value) => {
                                             if (/^(.)\1{9}$/.test(value)) {
                                                 return "Phone number cannot have all identical digits.";
@@ -373,7 +378,7 @@ const UserForm = ({ updating }) => {
                                         required: "About section is required",
                                         minLength: {
                                             value: 15,
-                                            message: "Must be at least 15 characters",
+                                            message: "About section must be at least 15 characters long",
                                         },
                                     }}
                                     render={({ field }) => (
@@ -444,8 +449,9 @@ const UserForm = ({ updating }) => {
                                                 type="checkbox"
                                                 onChange={(e) => {
                                                     const newStatus = e.target.checked;
-                                                    field.onChange(newStatus); 
-                                                    updateStatus({ id: selectedUser?._id, status : newStatus });                                                }}
+                                                    field.onChange(newStatus);
+                                                    updateStatus({ id: selectedUser?._id, status: newStatus });
+                                                }}
                                                 checked={field.value}
                                             />
                                         </div>

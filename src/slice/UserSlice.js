@@ -36,7 +36,7 @@ export const userSlice = createSlice({
                 localStorage.setItem("token", token);
         
                 state.token = token;
-                state.loginLoader = true;
+                state.loginLoader = false;
             } 
         })
         .addCase(authenticateUser.rejected, (state,action) => {
