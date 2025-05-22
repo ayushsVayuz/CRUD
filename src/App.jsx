@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { createBrowserRouter, RouterProvider, Navigate } from 'react-router-dom';
+import React from 'react';
+import * as pkg from 'react-router-dom';;
 import './App.css';
 import NavigationBar from './components/layout/NavigationBar.jsx';
 import HomePage from './pages/home/HomePage.jsx';
@@ -17,7 +17,7 @@ import UserDetails from './components/userComponents/UserDetails.jsx';
 
 function App() {
 
-
+  const {createBrowserRouter, RouterProvider, Navigate } = pkg;
   const router = createBrowserRouter([
     {
       path: "/",
@@ -26,8 +26,6 @@ function App() {
         {
           index: true,
           element: <Navigate to="/login" />
-
-
         },
         {
           index: true,
@@ -38,46 +36,40 @@ function App() {
           path: "/signup",
           element: <Signup />
         },
+
         {
+           path: "/",
+          element: <ProtectedRoute/>,
+          children: [
+{
           path: "/home",
-          element: <ProtectedRoute >
-            <NavigationBar />
-            <HomePage />
-          </ProtectedRoute>
+          element:  <HomePage />
         },
         {
           path: "/about",
-          element: <ProtectedRoute >
-            <NavigationBar />
-            <AboutPage />
-          </ProtectedRoute>
+          element: <AboutPage />
         },
         {
           path: "/createUser",
-          element: <ProtectedRoute >
-            <NavigationBar />
+          element: 
             <UserForm
               updating={false} />
-          </ProtectedRoute>
         },
         {
           path: "/updateUser/:id",
-          element: <ProtectedRoute >
-            <NavigationBar />
+          element:
             <UserForm
               updating={true} />
-          </ProtectedRoute>
         },
         {
           path: "/userDetails/:id",
-          element: <ProtectedRoute >
-            <NavigationBar />
+          element: 
             <UserDetails />
-          </ProtectedRoute>
+        }
+          ]
         }
       ]
     },
-
   ])
 
   return (
@@ -85,17 +77,15 @@ function App() {
       <CheckInternetConnection>
         <RouterProvider router={router} />
 
-        <ToastContainer
+         <ToastContainer
           position="bottom-right"
-          autoClose={2000}
+          autoClose={2000} 
 
         />
-      </CheckInternetConnection>
+      </CheckInternetConnection> 
     </div>
 
   )
 }
 
 export default App;
-
-

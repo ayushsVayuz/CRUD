@@ -4,17 +4,13 @@ const CheckInternetConnection = (props) => {
 
     const [isOnline, setOnline] = useState(true);
 
-
     /**
-     * Updates the online status by checking navigator.onLine once on mount.
-    */
+     * Updates the online status by checking navigator.onLine once when the component mounts.
+     * @return {void} Sets the online status based on the browser's connection state.
+     */
     useEffect(() => {
-        setOnline(navigator.onLine)
-    }, [])
-
-    console.log("isOnline", isOnline);
-
-
+        setOnline(navigator.onLine);
+    }, []);
 
     window.addEventListener('online', () => {
         setOnline(true)
@@ -23,7 +19,6 @@ const CheckInternetConnection = (props) => {
     window.addEventListener('offline', () => {
         setOnline(false)
     })
-
 
     if (isOnline) {
         return (

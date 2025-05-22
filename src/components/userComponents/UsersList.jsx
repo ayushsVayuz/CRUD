@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import * as ReactRouterDom from 'react-router-dom';
 import Pagination from "../Pagination";
 import ConfirmModal from "../ConfirmModel";
 import userStore from "../../store/Store";
@@ -8,14 +8,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash, faEdit, faUser, faXmark } from "@fortawesome/free-solid-svg-icons";
 
 function UsersList() {
+
+  const { Link, useSearchParams } = ReactRouterDom;
   const [searchParams] = useSearchParams();
   const { getAllUsersLoader, fetchAllUsersData, usersData, totalData, deleteUser, updateStatus } = userStore();
   const [isModalOpen, setModalOpen] = useState(false);
   const [selectedUserId, setSelectedUserId] = useState(null);
   const [loadingItemId, setLoadingItemId] = useState(null);
-  const [actionID, setActionID] = useState(null);
+  const [actionId, setActionId] = useState(null);
   const [statusLoading, setStatusLoading] = useState({});
-
 
   let searchQuery = searchParams.get("search");
   let pageNumber = Number(searchParams.get("page")) || 1;
@@ -23,15 +24,26 @@ function UsersList() {
 
 
   /**
-   * Fetches user data based on pagination and search filters.
+   * @param {number} pageNumber - The current page number for pagination.
+   * @param {string} searchQuery - The search query used to filter user data.
+   * @param {number} pageLimit - The maximum number of users per page.
+   * @return {void} Executes data fetch based on search and pagination parameters.
    */
   useEffect(() => {
 
     if (searchQuery) {
-      fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
-
+      fetchAllUsersData({
+        pageNumber,
+        searchQuery: searchQuery || "",
+        pageLimit
+      });
     } else {
-      usersData && usersData?.length === 0 && fetchAllUsersData({ pageNumber, searchQuery, pageLimit });
+      usersData && usersData?.length === 0 && fetchAllUsersData({
+        pageNumber,
+        searchQuery: searchQuery || "",
+        pageLimit
+      });
+
     }
   }, [pageNumber, searchQuery, pageLimit]);
 
@@ -47,19 +59,19 @@ function UsersList() {
   };
 
   /**
-   * Deletes the selected user and refreshes the list if necessary.
-   */
+  * @param {string} id - Unique identifier of the user to be deleted.
+  * @return {void} Sets the selected user ID and opens the confirmation modal.
+  */
   const handleConfirmDelete = async () => {
-
     setLoadingItemId(selectedUserId)
     await (deleteUser(selectedUserId, searchParams));
     setLoadingItemId(null)
     selectedUserId(null)
   };
 
-
   /**
-   * Automatically closes the confirmation modal when loading completes.
+  * @param {string|null} loadingItemId - Identifier of the item currently being processed. 
+  * @return {void} Closes the confirmation modal when no item is being loaded.
   */
   useEffect(() => {
     if (!loadingItemId) {
@@ -69,18 +81,16 @@ function UsersList() {
 
 
   /**
-   * Toggles the user's active status.
-   * @param {string} id - The user ID.
-   * @param {boolean} status - The current status of the user.
-   */
+  * @param {string} id - Unique identifier of the user.
+  * @param {boolean} status - Current active status of the user.
+  * @return {void} Updates the user's status and manages loading state.
+  */
   const handleToggleChange = async (id, status) => {
     setStatusLoading(prev => ({ ...prev, [id]: true }));
 
     try {
       let newStatus = !status;
-
-      const response = await updateStatus({ id, newStatus });
-      console.log("response", response);
+      await updateStatus({ id, newStatus });
     } finally {
       setStatusLoading(prev => ({ ...prev, [id]: false }))
     }
@@ -91,7 +101,6 @@ function UsersList() {
     <TableShimmer />
   ) : (
     <>
-
       <div className="overflow-x-auto mx-auto max-w-6xl p-4">
         <table className="w-full  text-sm sm:text-md ">
           <thead className="text-left">
@@ -134,31 +143,25 @@ function UsersList() {
                       )}
                   </td>
 
-
                   <td className="flex flex-row justify-center gap-3 p-2">
                     {
-                      actionID !== data?._id ? (
-
-                        <p onClick={() => setActionID(data?._id)}>...</p>
+                      actionId !== data?._id ? (
+                        <p onClick={() => setActionId(data?._id)}>...</p>
                       ) : (
                         <div className="relative">
                           <button
                             className="absolute top-[-15px] right-[-30px] p-1 text-red-500 hover:text-red-700 text-lg"
-                            onClick={() => setActionID(null)}
+                            onClick={() => setActionId(null)}
                           >
                             <FontAwesomeIcon icon={faXmark} className="ml-5" />
                           </button>
 
-
                           <ul className="grid grid-cols-3 items-center">
                             <li>
-
-
                               <Link
                                 to={`/updateUser/${data?._id}`}
                                 className=" px-3 py-1  rounded-lg text-sm"
                               >
-
                                 <FontAwesomeIcon icon={faEdit} className="text-sky-700" />
                               </Link></li>
                             <li>
@@ -174,7 +177,6 @@ function UsersList() {
                                     onClick={() => handleDeleteClick(data?._id)}
                                   >
                                     <FontAwesomeIcon icon={faTrash} className="text-sky-700" />
-
                                   </button>
                                 )
                               }</li>
@@ -188,7 +190,6 @@ function UsersList() {
                           </ul>
                         </div>
                       )
-
                     }
                   </td>
                 </tr>

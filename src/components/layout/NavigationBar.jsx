@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import * as ReactRouterDom from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
 
 function NavigationBar() {
+  
+    const { Link } = ReactRouterDom
     const [isOpen , setIsOpen] = useState (false)
+
     return (
-       
             <nav className="bg-sky-500 shadow-md p-4">
               <div className="max-w-6xl mx-auto flex flex-wrap justify-between items-center">
                 <Link to="/home" className="text-2xl sm:text-3xl font-bold text-white">
@@ -32,8 +34,6 @@ function NavigationBar() {
                 </div>
               </div>
             </nav>
-          
-       
     );
 }
 

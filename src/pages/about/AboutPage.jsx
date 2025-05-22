@@ -4,38 +4,33 @@ function AboutPage() {
 
     return (
         <div className="mt-12 px-4 sm:px-10 lg:px-20 flex flex-col text-center gap-10">
-    
             <p className="text-3xl sm:text-4xl lg:text-5xl font-bold">About</p>
             <p className="text-lg sm:text-xl">Why I love doing coding. Every day.</p>
-
-         
             <div className="flex justify-center">
-                <img 
+                <img
                     className="h-40 w-40 sm:h-60 sm:w-60 lg:h-80 lg:w-80 rounded-full object-cover"
-                    src="WhatsApp Image 2025-04-13 at 19.26.15_d4e26ecc.jpg" 
+                    src="WhatsApp Image 2025-04-13 at 19.26.15_d4e26ecc.jpg"
                     alt="Profile"
                 />
             </div>
 
- 
             <div className="text-start leading-8 tracking-wide mx-auto max-w-3xl">
                 <p>
-                    I am a final year Computer Science student at Chaudhary Charan Singh University, Meerut, 
-                    with a passion for building innovative and user-centric web applications. Specializing in modern 
-                    web development technologies, including the PERN stack (PostgreSQL, Express.js, ReactJS, Node.js), 
+                    I am a final year Computer Science student at Chaudhary Charan Singh University, Meerut,
+                    with a passion for building innovative and user-centric web applications. Specializing in modern
+                    web development technologies, including the PERN stack (PostgreSQL, Express.js, ReactJS, Node.js),
                     I strive to create seamless and impactful digital experiences.
                 </p><br />
                 <p>
-                    For me, coding is more than a skill—it's a way to bring ideas to life and solve meaningful problems. 
+                    For me, coding is more than a skill—it's a way to bring ideas to life and solve meaningful problems.
                     My journey has been fueled by curiosity, resilience, and a commitment to refining my craft.
                 </p><br />
                 <p>
-                    Collaborative by nature and detail-oriented in my approach, I aim to leave a lasting impact in the 
+                    Collaborative by nature and detail-oriented in my approach, I aim to leave a lasting impact in the
                     digital world through thoughtful and creative web solutions.
                 </p><br />
                 <p>Don't hesitate to reach out – let's grab a coffee and chat!</p><br />
             </div>
-
 
             <div className="flex justify-center gap-6">
                 <a href="https://www.instagram.com/sharmaayushay/" target="_blank" rel="noreferrer">
@@ -52,9 +47,8 @@ function AboutPage() {
                 </a>
             </div>
 
-
             <div className="mt-6">
-                <a href="mailto:sharmaayushay@gmail.com?subject=What you're interested in"  target="_blank">
+                <a href="mailto:sharmaayushay@gmail.com?subject=What you're interested in" target="_blank">
                     <button className="bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 mb-5">
                         Email, Perhaps?
                     </button>

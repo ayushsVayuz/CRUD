@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 
 /**
  * Defines the user slice containing actions and reducers for managing user state.
+ * 
+ * @return {Object} A Redux slice with initial state, reducers, and extra async reducers.
  */
 export const userSlice = createSlice({
     name: "userData",
@@ -32,9 +34,7 @@ export const userSlice = createSlice({
             
             if (action.payload?.success && action.payload?.data?.token) {
                 const { token } = action.payload.data;
-                
                 localStorage.setItem("token", token);
-        
                 state.token = token;
                 state.loginLoader = false;
             } 
@@ -86,50 +86,41 @@ export const userSlice = createSlice({
         })
         .addCase(postUserData.pending, (state, action) => {
             state.formLoader = true
-
         })
         .addCase(postUserData.fulfilled, (state, action) => {
             if (action.payload && action.payload.data) { 
                 state.usersData.push(action.payload.data); 
                 state.totalData += 1;
                 state.formLoader = false;
-
                 toast.success("User created.")
             }
             
         })
         .addCase(postUserData.rejected, (state, action) => {
             state.formLoader = false;
-
-
             toast.error("Failed to create user: " + action.error.message);
         })
         .addCase(getSpecificUserData.pending, (state, action) => {
         })
         .addCase(getSpecificUserData.fulfilled, (state, action) => {
             state.selectedUser  = action.payload.data
-            
         })
         .addCase(getSpecificUserData.rejected, (state, action) => {
             toast.error("Failed to fetch user data: " + action.error.message);
         })
         .addCase(updateUserData.pending, (state, action) => {
             state.formLoader = true
-
         })
         .addCase(updateUserData.fulfilled, (state, action) => {
             const updatedUser = action.payload.data;
             state.usersData = state.usersData.map(user =>
                 user._id === updatedUser._id ? updatedUser : user
             );
-
             state.formLoader = false
-
             toast.success("User updated");
         })
         .addCase(updateUserData.rejected, (state, action) => {
             state.formLoader = false
-
             toast.error("Failed to update user: " + action.error.message);
         })
     }

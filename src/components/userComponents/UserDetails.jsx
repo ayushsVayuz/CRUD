@@ -1,16 +1,17 @@
 import React, { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import * as pkg from 'react-router-dom';;
 import userStore from '../../store/Store';
 
 const UserDetails = () => {
+  const { useParams, useNavigate } = pkg;
   const { id } = useParams();
   const navigate = useNavigate();
   const { selectedUser, getSpecificUserData, getSpecificUserLoader } = userStore();
 
   /**
-   * Fetches user details when the user ID changes.
-   * @param {string} id - The user ID from the URL.
-   */
+  * @param {string} id - Unique identifier for the user.
+  * @return {void} Triggers data retrieval when the user ID changes.
+  */
   useEffect(() => {
     getSpecificUserData(id);
   }, [id]);
@@ -23,8 +24,6 @@ const UserDetails = () => {
         </div>
       ) : (
         <div className="pl-6 pr-6 pb-6 h-auto mt-5 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto">
-
-
           <div className="mt-4 space-y-3">
             <div className="relative bg-sky-500 w-full m-auto max-w-sm h-25 rounded-lg flex justify-center items-end pb-4"></div>
             {selectedUser?.image && (
@@ -36,14 +35,10 @@ const UserDetails = () => {
                     {selectedUser?.name?.trim()?.slice(0, 1).toUpperCase()}
                   </h3>
                 )}
-
-
               </div>
-
-
             )}
-            <div className="mt-17 flex gap-10">
 
+            <div className="mt-17 flex gap-10">
               <div className="flex flex-col gap-6 opacity-40">
                 <p>Name:</p>
                 <p>Email:</p>
@@ -75,10 +70,7 @@ const UserDetails = () => {
                 </p>
 
               </div>
-
             </div>
-
-
           </div>
 
           <div className="flex mt-6 ">
@@ -88,7 +80,6 @@ const UserDetails = () => {
             >
               Back
             </button>
-
           </div>
         </div>
       )}

@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react'
-import { useLocation } from 'react-router-dom'
+import * as pkg from 'react-router-dom';
 
 const Title = () => {
 
+    const { useLocation } = pkg;
     let location = useLocation();
-    console.log("location", location.pathname);
     let path = location.pathname
 
-    // It sets title for each components or page according to the pathname 
+    /**
+     * @param {string} path - Current URL pathname used to determine the page title.
+     * @return {void} Updates the document's title without returning a value.
+     */
     useEffect(() => {
-
         if (path.includes('/login')) {
             document.title = "Login | CRUD";
         } else if (path.includes('/signup')) {
@@ -25,7 +27,6 @@ const Title = () => {
         } else if (path.includes('/userDetails')) {
             document.title = "User Details | CRUD"
         }
-
     }, [location.pathname]);
 
     return null;

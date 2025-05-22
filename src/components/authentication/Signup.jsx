@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import * as pkg from 'react-router-dom';
 import { Controller, useForm } from "react-hook-form";
 import { handleNameChange, handleEmailChange, handlePhoneChange, handlePasswordChange } from "../../utils/Utils";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -7,11 +7,10 @@ import userStore from "../../store/Store";
 
 function Signup() {
 
-
-    const navigate = useNavigate();
+    const { Link, useNavigate } = pkg;
+    const navigate = useNavigate(); 
     const { signupLoader, registerUser } = userStore();
     const [showPassword, setShowPassword] = useState(false);
-
     const {
         control,
         handleSubmit,
@@ -50,9 +49,7 @@ function Signup() {
     };
 
     return (
-
         (
-
             <div className="min-h-screen flex items-center justify-center">
                 <form onSubmit={handleSubmit(handleSignup)} className="pl-6 pr-6 pt-1 pb-5 shadow-2xl bg-white rounded-lg w-full max-w-md mx-auto">
                     <h1 className="text-center text-blue-600 text-3xl font-medium">Create Account</h1>

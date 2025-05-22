@@ -1,20 +1,19 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import * as pkg from 'react-router-dom';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { useNavigate } from "react-router-dom";
 
 const SearchUsers = () => {
+
+  const { useSearchParams, useNavigate } = pkg;
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
-
-
   /**
-  * @param {Event} event - Form submission event.
+  * @param {Event} event - The form submission event.
+  * @return {void} Updates search parameters based on user input.
   */
-
   const handleSubmit = (event) => {
     event.preventDefault();
 
@@ -26,19 +25,18 @@ const SearchUsers = () => {
   }
 
   /**
-   * @param {Event} e - Input event containing search query.
-   */
+  * @param {Event} e - Input event containing search query.
+  * @return {void} Updates the search query and navigates when input is empty.
+  */
   const handleSearchChange = (e) => {
     let trimmedValue = e.target.value.trimStart().replace(/\s+/g, ' ');
-    console.log("trimmedValue", trimmedValue);
-    
+
     setSearchQuery(trimmedValue)
-
-    if (trimmedValue === "" || trimmedValue === null ) {
-      navigate(-1);
+    if (trimmedValue === "" || trimmedValue === null) {
       setSearchParams({});
+       navigate(-1);
+      window.location.reload();
     }
-
   };
 
   return (

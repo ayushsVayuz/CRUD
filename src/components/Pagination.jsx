@@ -1,29 +1,27 @@
 import React from 'react';
 import ReactPaginate from 'react-paginate';
-import { useSearchParams } from 'react-router-dom';
+import * as ReactRouterDom from 'react-router-dom';
 import userStore from '../store/Store';
 
 const Pagination = ({ currentPage }) => {
 
+  const { useSearchParams } = ReactRouterDom;
   const [searchParams, setSearchParams] = useSearchParams();
   const { totalData } = userStore();
 
   let itemsPerPage = 10;
   const pageCount = Math.ceil((totalData || 1) / itemsPerPage);
 
-
   /**
-   * @param {Object} event - The pagination event data.
+  * @param {Object} event - The pagination event containing the selected page index.
+  * @return {void} Updates the current page in search parameters.
   */
   const handlePageChange = (event) => {
-    console.log("event.selected", event.selected);
-
     setSearchParams(prevParams => ({ ...prevParams, page: event.selected + 1 }));
   }
 
   return (
     <div className='flex justify-center p-5'>
-
       <ReactPaginate
         previousLabel={<button
           disabled={Number(searchParams.get("page")) === 1 || !searchParams.get("page")}

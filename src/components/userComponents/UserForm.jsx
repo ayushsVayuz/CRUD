@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import * as pkg from 'react-router-dom';
 import { Controller, useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
 import { handleNameChange, handleAboutChange, handleEmailChange, handleLocationChange, handlePhoneChange } from "../../utils/Utils";
 import { FaArrowLeft } from "react-icons/fa";
 import userStore from "../../store/Store";
@@ -12,20 +11,16 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const UserForm = ({ updating }) => {
 
-
+    const { useNavigate, useSearchParams, useParams } = pkg;
     const [searchParams] = useSearchParams();
     let navigate = useNavigate();
     const { id } = useParams();
-    const [isChecked, setIsChecked] = useState(false);
 
-    const { usersData, selectedUser, formLoader, getSpecificUserData, postUserData, updateUserData, getSpecificUserLoader } = userStore();
-    let pageNumber = Number(searchParams.get("page")) || 1;
-
+    const { selectedUser, formLoader, getSpecificUserData, postUserData, updateUserData, getSpecificUserLoader } = userStore();
     const {
         handleSubmit,
         control,
         setValue,
-        getValues,
         watch,
         trigger,
         formState: { errors },
@@ -49,18 +44,18 @@ const UserForm = ({ updating }) => {
     };
 
     /**
-     * @param {Event} e - The event triggered by the back action.
-     */
+    * @param {Event} e - The event triggered by the back action.
+    * @return {void} Prevents default event behavior and navigates to the home page.
+    */
     function backToHome(e) {
         e.preventDefault();
         navigate("/home")
-
     }
 
-
     /**
-     * @param {Event} e - The event containing the selected file.
-     */
+    * @param {Event} e - The file selection event triggered by the user.
+    * @return {void} Validates file type and updates image state accordingly.
+    */
     function handleImageChange(e) {
 
         let type = e.target.files[0]?.type
@@ -69,7 +64,6 @@ const UserForm = ({ updating }) => {
             setFileName(e.target.files[0]?.name)
             setFile(URL.createObjectURL(e.target.files[0]));
             setImage(e.target.files[0])
-
         } else {
             setFileName(null)
             setFile(null);
@@ -78,13 +72,10 @@ const UserForm = ({ updating }) => {
         }
     }
 
-
-
-
     /**
-     * Warns the user before leaving the page.
-     * Runs when `formLoader` changes.
-     */
+    * @param {boolean} formLoader - Indicates if the form is currently loading.
+    * @return {void} Adds or removes a warning before page unload based on formLoader state.
+    */
     useEffect(() => {
         window.addEventListener("beforeunload", alertUser);
         return () => {
@@ -92,30 +83,31 @@ const UserForm = ({ updating }) => {
         };
     }, [formLoader]);
 
-
- 
+    /**
+    * @param {Event} e - The beforeunload event triggered when the user attempts to leave the page.
+    * @return {void} Prevents the default unload behavior and prompts a warning.
+    */
     const alertUser = (e) => {
         e.preventDefault();
-        e.returnValue = "";
     };
+
 
     if (updating == true) {
 
         /**
          * @param {string} id - Unique user identifier for retrieval.
+         * @return {void} Fetches and updates user details when the ID changes.
          */
         useEffect(() => {
             (getSpecificUserData(id));
         }, [id])
 
 
-
         /**
-         * Updates form values with data from the selected user.
+         * @param {Object} selectedUser - The user's data retrieved from the store.
+         * @return {void} Updates form fields with the selected user's information.
          */
         useEffect(() => {
-
-
             setValue("name", selectedUser?.name)
             setValue("email", selectedUser?.email)
             setValue("phone", selectedUser?.phone)
@@ -125,7 +117,6 @@ const UserForm = ({ updating }) => {
             trigger();
         }, [selectedUser, trigger])
     }
-    console.log("selecteduser", selectedUser?.status);
 
     const formData = watch();
     const errorLength = Object.keys(errors).length === 0
@@ -146,6 +137,7 @@ const UserForm = ({ updating }) => {
      * @return {Promise<void>} Sends user data to API and redirects upon success.
      */
     const onSubmit = async (data) => {
+
         let formData = new FormData();
         formData.append("name", data?.name);
         formData.append("email", data?.email);
@@ -155,34 +147,23 @@ const UserForm = ({ updating }) => {
         formData.append("image", image);
         formData.append("status", data?.status ?? false);
 
-
-
         try {
-            console.log("updating", updating)
             if (updating !== true) {
-
                 const response = await postUserData(formData)
-
                 if (response?.data?.statusCode === 201) {
                     navigate("/home");
                 }
-
             } else {
                 const response = await updateUserData({ formData, id })
-                console.log("response put", response);
                 if (response?.data?.statusCode === 200) {
                     navigate(-1);
                 }
-
-
             }
-
         } catch (error) {
             console.log("Error: " + (error?.message || "Something went wrong"));
         }
 
     };
-
 
     return (
         getSpecificUserLoader ?
@@ -195,8 +176,6 @@ const UserForm = ({ updating }) => {
                     onSubmit={handleSubmit(onSubmit)}
                     className=" mt-10 pl-10 pr-10  h-125  ml-60 mr-60 shadow-2xl bg-white rounded-lg w-auto"
                 >
-
-
                     <div className="grid grid-rows-2 ">
                         <div className="flex h-20  items-center">
                             <button
@@ -211,7 +190,6 @@ const UserForm = ({ updating }) => {
                         </div>
 
                         <div className="grid grid-cols-2 gap-10 h-30">
-
                             <div>
                                 <label className="text-sm font-medium text-gray-700 -mb-1">
                                     Full Name <span className="text-red-500">*</span>
@@ -233,8 +211,6 @@ const UserForm = ({ updating }) => {
                                     }}
                                     render={({ field }) => (
                                         <div className="relative">
-                                            {console.log("formLoader from useform", formLoader)}
-
                                             <input
                                                 {...field}
                                                 type="text"
@@ -246,9 +222,7 @@ const UserForm = ({ updating }) => {
                                                 onChange={(e) => handleNameChange({ e, field })}
                                                 disabled={formLoader ? true : false}
                                             />
-
                                             <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.name?.message}</p>
-
                                         </div>
                                     )}
                                 />
@@ -283,9 +257,7 @@ const UserForm = ({ updating }) => {
                                                 placeholder="Enter your email"
                                                 onChange={(e) => handleEmailChange({ e, field })}
                                             />
-
                                             <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.email?.message}</p>
-
                                         </div>
                                     )}
                                 />
@@ -303,14 +275,12 @@ const UserForm = ({ updating }) => {
                                             value: /^[0-9]{10}$/,
                                             message: "Phone Number must be exactly 10 digits.",
                                         },
-
                                         validate: (value) => {
                                             if (/^(.)\1{9}$/.test(value)) {
                                                 return "Phone number cannot have all identical digits.";
                                             }
                                             return true;
                                         },
-
                                     }}
                                     render={({ field }) => (
                                         <div className="relative">
@@ -325,9 +295,7 @@ const UserForm = ({ updating }) => {
                                                 placeholder="Enter your phone number"
                                                 onChange={(e) => handlePhoneChange({ e, field })}
                                             />
-
                                             <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.phone?.message}</p>
-
                                         </div>
                                     )}
                                 />
@@ -358,9 +326,7 @@ const UserForm = ({ updating }) => {
                                                 placeholder="Enter your location"
                                                 onChange={(e) => handleLocationChange({ e, field })}
                                             />
-
                                             <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.location?.message}</p>
-
                                         </div>
                                     )}
                                 />
@@ -394,9 +360,7 @@ const UserForm = ({ updating }) => {
                                                 placeholder="Tell us about yourself"
                                                 onChange={(e) => handleAboutChange({ e, field })}
                                             />
-
                                             <p className="text-red-500 text-[13px] -mb-1 min-h-[20px]">{errors.about?.message}</p>
-
                                         </div>
                                     )}
                                 />
@@ -408,10 +372,8 @@ const UserForm = ({ updating }) => {
 
                                     <input type="file" disabled={formLoader} id='files' style={{ 'display': 'none' }} name="image" onChange={handleImageChange} accept="image/*" />
                                     <p className="text-gray-600 font-medium truncate max-w-xs">{fileName || ""}</p>
-
                                     {file ? (
                                         <div className="flex items-center gap-4">
-
                                             <img src={file} className="h-20 w-20 rounded-lg shadow-lg object-cover border-2 border-gray-300" alt="preview" />
                                             <div className="relative w-full">
                                                 <button
@@ -428,37 +390,8 @@ const UserForm = ({ updating }) => {
                                         </div>) : (
                                         <p className="text-gray-400">No image selected</p>
                                     )}
-
-
-
                                 </div>
-
-
-                                <label className="text-sm font-medium text-gray-700 -mb-1">
-                                    Active
-                                </label>
-                                <Controller
-                                    name="status"
-                                    control={control}
-                                    defaultValue={false}
-                                    render={({ field }) => (
-                                        <div className="relative">
-
-                                            <input
-                                                {...field}
-                                                type="checkbox"
-                                                onChange={(e) => {
-                                                    const newStatus = e.target.checked;
-                                                    field.onChange(newStatus);
-                                                    updateStatus({ id: selectedUser?._id, status: newStatus });
-                                                }}
-                                                checked={field.value}
-                                            />
-                                        </div>
-                                    )}
-                                />
-
-
+                                
                                 <div className={updating ? ` ` : `grid grid-cols-2 mt-2 gap-5 items-center`}>
                                     <input type="reset" onClick={() => reset(defaultValues)} className={updating ? `hidden ` : `h-12 mt-5 border-2 border-red-700 text-red-700 rounded-2xl font-medium hover:bg-red-700 hover:text-white text-lg`} />
                                     {
@@ -470,7 +403,6 @@ const UserForm = ({ updating }) => {
                                             <button
                                                 disabled={!isValid}
                                                 className={` h-12  mt-5 w-full font-medium text-lg rounded-xl ${!isValid ? "bg-gray-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} text-white`}
-
                                             >
                                                 Submit
                                             </button>

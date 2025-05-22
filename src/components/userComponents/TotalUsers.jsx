@@ -3,7 +3,7 @@ import userStore from '../../store/Store'
 
 const TotalUsers = () => {
 
-      const { totalData} = userStore();
+    const { totalData} = userStore();
 
     return (
         <div>

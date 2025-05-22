@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import * as ReactRouterDom from 'react-router-dom';
 import { Controller, useForm } from "react-hook-form";
 import { handleEmailChange, handlePasswordChange } from "../../utils/Utils";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import userStore from "../../store/Store";
 
-
 function Login() {
+    const { useNavigate, Link } = ReactRouterDom;
     const navigate = useNavigate();
     const [showPassword, setShowPassword] = useState(false);
     const {
@@ -20,29 +20,25 @@ function Login() {
     });
 
     const { loginLoader, token, authenticateUser } = userStore();
-
     const formData = watch();
     const isValid = Object.keys(errors).length === 0 && Object.values(formData).every(value => value.trim() !== "");
-
 
     /**
      * @param {Object} data - Contains user credentials.
      * @return {Promise<void>} Authenticates the user.
      */
     const handleLogin = async (data) => {
-
         let formData = new FormData();
         formData.append("email", data?.email);
         formData.append("password", data?.password);
 
         await authenticateUser(formData);
-
     };
 
-
-
     /**
-     * Keeps track of authentication state and navigates to home when token is available.
+     * @param {string} token - Authentication token that determines user login state.
+     * @param {Function} navigate - Function to redirect the user to the home page.
+     * @return {void} Redirects user upon authentication.
      */
     useEffect(() => {
         if (token) {
@@ -50,15 +46,14 @@ function Login() {
         }
     }, [token, navigate]);
 
+
     return (
         (
-
             <div className="min-h-screen flex items-center justify-center">
                 <form onSubmit={handleSubmit(handleLogin)} className="p-6 shadow-2xl  bg-white rounded-lg w-full max-w-md mx-auto">
                     <h1 className="text-center text-blue-600 text-3xl font-medium">Welcome Back</h1>
 
                     <div className="flex flex-col space-y-4 mt-6">
-
                         <label className="text-sm font-medium text-gray-700 mb-1">
                             Email <span className="text-red-500">*</span>
                         </label>
@@ -82,7 +77,7 @@ function Login() {
                                         {...field}
                                         type="text"
                                         inputMode="email"
-                                        maxLength={44}  
+                                        maxLength={44}
                                         className={`p-3 w-full text-base border ${errors.email ? "border-red-500" : "border-blue-500"
                                             } rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500`}
                                         placeholder="Enter your email"
@@ -150,9 +145,7 @@ function Login() {
 
                         }
 
-
                         <div className="flex flex-col items-center">
-
                             <Link
                                 to="/signup"
                                 className="mt-2 px-4 py-2 text-blue-600 text-lg   hover:text-blue-800 transition">
