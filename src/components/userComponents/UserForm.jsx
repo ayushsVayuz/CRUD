@@ -11,7 +11,7 @@ import { faXmark } from "@fortawesome/free-solid-svg-icons";
 
 const UserForm = ({ updating }) => {
 
-    const { useNavigate, useSearchParams, useParams } = pkg;
+    const { useNavigate, useParams } = pkg;
     let navigate = useNavigate();
     const { id } = useParams();
 
