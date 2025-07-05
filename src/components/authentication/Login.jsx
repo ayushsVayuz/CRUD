@@ -39,7 +39,7 @@ function Login() {
      * @param {string} token - Authentication token that determines user login state.
      * @param {Function} navigate - Function to redirect the user to the home page.
      * @return {void} Redirects user upon authentication.
-     */
+     */z
     useEffect(() => {
         if (token) {
             navigate("/home");
