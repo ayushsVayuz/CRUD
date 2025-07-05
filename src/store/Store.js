@@ -191,6 +191,7 @@ const userStore = create((set, get) => ({
     } catch (error) {
       set({ getSpecificUserLoader: false });
       toast.error("Unable to fetch user data");
+       console.log(error.response.data);
     }
   },
 

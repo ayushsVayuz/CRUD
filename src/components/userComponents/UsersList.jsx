@@ -29,25 +29,32 @@ function UsersList() {
    * @param {number} pageLimit - The maximum number of users per page.
    * @return {void} Executes data fetch based on search and pagination parameters.
    */
-  useEffect(() => {
+  // useEffect(() => {
 
-    if (searchQuery) {
-      fetchAllUsersData({
-        pageNumber,
-        searchQuery: searchQuery || "",
-        pageLimit
-      });
-    } else {
-      usersData && usersData?.length === 0 && fetchAllUsersData({
-        pageNumber,
-        searchQuery: searchQuery || "",
-        pageLimit
-      });
+  //   if (searchQuery) {
+  //     fetchAllUsersData({
+  //       pageNumber,
+  //       searchQuery: searchQuery || "",
+  //       pageLimit
+  //     });
+  //   } else {
+  //     usersData && usersData?.length === 0 && fetchAllUsersData({
+  //       pageNumber,
+  //       searchQuery: searchQuery || "",
+  //       pageLimit
+  //     });
 
-    }
-  }, [pageNumber, searchQuery, pageLimit]);
+  //   }
+  // }, [pageNumber, searchQuery, pageLimit]);
 
 
+useEffect(() => {
+  fetchAllUsersData({
+    pageNumber,
+    searchQuery: searchQuery || "",
+    pageLimit,
+  });
+}, [pageNumber, searchQuery]);
 
 
   /**

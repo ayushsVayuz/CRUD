@@ -17,7 +17,7 @@ import UserDetails from './components/userComponents/UserDetails.jsx';
 
 function App() {
 
-  const {createBrowserRouter, RouterProvider, Navigate } = pkg;
+  const { createBrowserRouter, RouterProvider, Navigate } = pkg;
   const router = createBrowserRouter([
     {
       path: "/",
@@ -38,34 +38,33 @@ function App() {
         },
 
         {
-           path: "/",
-          element: <ProtectedRoute/>,
+          element: <ProtectedRoute />,
           children: [
-{
-          path: "/home",
-          element:  <HomePage />
-        },
-        {
-          path: "/about",
-          element: <AboutPage />
-        },
-        {
-          path: "/createUser",
-          element: 
-            <UserForm
-              updating={false} />
-        },
-        {
-          path: "/updateUser/:id",
-          element:
-            <UserForm
-              updating={true} />
-        },
-        {
-          path: "/userDetails/:id",
-          element: 
-            <UserDetails />
-        }
+            {
+              path: "/home",
+              element: <HomePage />
+            },
+            {
+              path: "/about",
+              element: <AboutPage />
+            },
+            {
+              path: "/createUser",
+              element:
+                <UserForm
+                  updating={false} />
+            },
+            {
+              path: "/updateUser/:id",
+              element:
+                <UserForm
+                  updating={true} />
+            },
+            {
+              path: "/userDetails/:id",
+              element:
+                <UserDetails />
+            }
           ]
         }
       ]
@@ -77,12 +76,12 @@ function App() {
       <CheckInternetConnection>
         <RouterProvider router={router} />
 
-         <ToastContainer
+        <ToastContainer
           position="bottom-right"
-          autoClose={2000} 
+          autoClose={2000}
 
         />
-      </CheckInternetConnection> 
+      </CheckInternetConnection>
     </div>
 
   )
